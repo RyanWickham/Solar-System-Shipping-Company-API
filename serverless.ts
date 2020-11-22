@@ -19,6 +19,7 @@ const serverlessConfiguration: Serverless = {
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
+    profile: 'ServerlesAccount',
     apiGateway: {
       minimumCompressionSize: 1024,
     },
@@ -27,13 +28,14 @@ const serverlessConfiguration: Serverless = {
     },
   },
   functions: {
-    hello: {
-      handler: 'handler.hello',
+    addSpaceship: {
+      handler: 'lambdas/addSpaceship.handler',
       events: [
         {
           http: {
-            method: 'get',
-            path: 'hello',
+            path: 'add-spaceship/{spaceship}',
+            method: 'PUT',
+            cors: true
           }
         }
       ]
