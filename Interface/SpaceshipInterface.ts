@@ -1,11 +1,10 @@
-import { Location } from './LocationInterface';
 
-enum SPACESHIP_STATUS {DECOMMISIONED, MAINTENANCE, OPERATIONAL};
+export enum SPACESHIP_STATUS {DECOMMISIONED, MAINTENANCE, OPERATIONAL};
 
 export interface Spaceship {
     spaceshipID: String,
     name: String,
     model: String,
-    location: Location,
+    locationID: number,
     status: SPACESHIP_STATUS
 }
