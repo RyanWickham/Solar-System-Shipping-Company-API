@@ -5,8 +5,7 @@ import {IOHandler} from './src/IO/index';
 
 export const hello: APIGatewayProxyHandler = async (event, _context) => {
   const input = IOHandler.input(event);
-  console.log('The Event - ', input);
-
+  
   const result = service.hello(input);
 
   return IOHandler.returnSuccess(result);
