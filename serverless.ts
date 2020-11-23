@@ -35,7 +35,7 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           http: {
-            method: 'get',
+            method: 'post',
             path: 'hello',
           }
         }
