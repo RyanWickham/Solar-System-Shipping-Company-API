@@ -107,6 +107,17 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
+    spaceshipTravelTo: {
+      handler: './src/handler/spaceshipTravelTo.handler',
+      events: [
+        {
+          http: {
+            method: 'post',
+            path: 'travel',
+          }
+        }
+      ]
+    },
   }
 }
 
