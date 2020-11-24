@@ -31,7 +31,7 @@ const serverlessConfiguration: Serverless = {
 
   functions: {
     addLocation: {
-      handler: 'handler.addLocation',
+      handler: './src/handler/addLocation.handler',
       events: [
         {
           http: {
