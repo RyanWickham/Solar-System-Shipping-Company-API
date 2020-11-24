@@ -10,7 +10,7 @@ const tableNames = {
 }
 
 export const dynamo = {
-    put: async (data) => {
+    put: async (data: {tableName: string, item: {[key: string]: any}}) => {
         // const params = {
         //     TableName: data.tableName,
         //     Item: data.item
@@ -22,7 +22,7 @@ export const dynamo = {
         return "DATABASE -> ADDING THING";
     },
 
-    get: async (data) => {
+    get: async (data: {tableName: string, Key: {[key: string]: any}}) => {
         // const params = {
         //     TableName: data.tableName,
         //     Key: data.keys

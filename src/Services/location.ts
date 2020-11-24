@@ -1,14 +1,11 @@
 export const addLocationService = async (io: {[key: string]: any}, 
         data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
-    
-    //create record to add to database
-    const recordForDatabase = {
+
+    //create record to add/send to database
+    const result = await io.database.put({
         tableName: io.database.tableNames.locations,
         item: data
-    }
-
-    //send to database
-    const result = await io.database.put(recordForDatabase);
+    });
 
     return {
         message: "Location Added: ID: " + data.id + ", city name: " + data.cityName + ", planet name: " + data.planetName
