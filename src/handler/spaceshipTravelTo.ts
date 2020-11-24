@@ -32,9 +32,8 @@ const errorChecking = (travelData: {[key: string]: any}): {statusCode: number, b
     }
 
     //check if spaceship ID and distination ID is correct type
-    if(typeof travelData.spaceshipID != 'string' || typeof travelData.distinationID != 'string'){
-        return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
-    }
+    IOHandler.stringErrorChecking(travelData.spaceshipID);
+    IOHandler.stringErrorChecking(travelData.distinationID);
 
     return IOHandler.returnSuccess('');//use as a dummy response to signify no errors
 }
