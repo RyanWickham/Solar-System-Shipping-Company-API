@@ -4,19 +4,16 @@ export const spaceshipTravelToService = (data: {spaceshipID: string, distination
     }
 }
 
-// export const locationHelpService = () => {
-//     return {
-//         message: "Location Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /location.",
-//         addLocation: {
-//             path: '/location',
-//             HTTPStatusCode: 'post',
-//             requiredJSON:  {
-//                 id: 'required string',
-//                 cityName: 'required string',
-//                 planetName: 'required string',
-//                 totalAvailableCapacity: 'required number',
-//                 currentAmountOfCapacityUsed: 'optional number -> default to 0, currentAmountOfCapacityUsed <= totalAvailableCapacity'
-//             },
-//         },
-//     }
-// }
+export const travelHelpService = () => {
+    return {
+        message: "Travel Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /location.",
+        spaceshipTravelTo: {
+            path: '/travel',
+            HTTPStatusCode: 'post',
+            requiredJSON:  {
+                spaceshipID: 'required string',
+                distinationID: 'required string',
+            },
+        },
+    }
+}
