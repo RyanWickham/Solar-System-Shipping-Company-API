@@ -22,16 +22,12 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
 const errorChecking = (locationToDelete: {[key: string]: any}): {statusCode: number, body: string} => {
     //check if id was provided
     if(!locationToDelete.id){
-        return IOHandler.returnError400({
-            message: IOLocationErrorMessages.missingItemMessage
-        });
+        return IOHandler.returnError400(IOLocationErrorMessages.missingItemMessage);
     }
 
     //check if id is correct type
     if(typeof locationToDelete.id != 'string'){
-        return IOHandler.returnError400({
-            message: IOLocationErrorMessages.paramaterHasWrongTypeMessage
-        });
+        return IOHandler.returnError400(IOLocationErrorMessages.paramaterHasWrongTypeMessage);
     }
 
     return IOHandler.returnSuccess('');//use as a dummy response to signify no errors

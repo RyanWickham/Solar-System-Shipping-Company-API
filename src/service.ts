@@ -21,6 +21,9 @@ const locationHelpService = () => {
             planetName: 'required string',
             totalAvailableCapacity: 'required number',
             currentAmountOfCapacityUsed: 'optional number -> default to 0, currentAmountOfCapacityUsed <= totalAvailableCapacity'
+        },
+        delete: {
+            id: 'required string -> id of location to be deleted'
         }
     }
 }
