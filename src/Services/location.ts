@@ -13,7 +13,7 @@ export const deleteLocationService = (data: {id: string}) => {
 
 export const locationHelpService = () => {
     return {
-        message: "Location Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /Location.",
+        message: "Location Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /location.",
         post: {
             id: 'required string',
             cityName: 'required string',
