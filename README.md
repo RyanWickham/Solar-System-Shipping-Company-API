@@ -2,9 +2,23 @@
 
 In the distant future, humans have colonised all planets in our solar system. Stomble, a shipping company trying to expand their operations to the whole solar system. This project is an API for Stomble to use with their interplanetary travels, developed to manage the logistics of Stomble's fleet of spaceships.
 
-# Technologies
+## Technologies
 
 This project uses:
 
 - Typescript
 - Serverless
+
+## Endpoints
+
+### Add a Location
+
+Post Request
+{url}/location
+
+Requires a JSON string to be submitted with this request
+{
+id: string,
+cityName:string,
+planetName: string
+}

@@ -30,28 +30,17 @@ const serverlessConfiguration: Serverless = {
   },
 
   functions: {
-    hello: {
-      handler: 'handler.hello',
+    addLocation: {
+      handler: 'handler.addLocation',
       events: [
         {
           http: {
             method: 'post',
-            path: 'hello',
+            path: 'location',
           }
         }
       ]
     },
-    goodbye: {
-      handler: 'handler.goodbye',
-      events: [
-        {
-          http: {
-            method: 'get',
-            path: 'goodbye',
-          }
-        }
-      ]
-    }
   }
 }
 
