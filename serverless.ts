@@ -112,8 +112,19 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           http: {
-            method: 'post',
+            method: 'put',
             path: 'travel',
+          }
+        }
+      ]
+    },
+    travelHelp: {
+      handler: './src/handler/travelHelp.handler',
+      events: [
+        {
+          http: {
+            method: 'get',
+            path: 'travel/help',
           }
         }
       ]
