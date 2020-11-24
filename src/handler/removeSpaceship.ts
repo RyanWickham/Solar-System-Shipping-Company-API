@@ -30,10 +30,8 @@ const errorChecking = (spaceshipData: {[key: string]: any}): {statusCode: number
         return IOHandler.returnError400(IOErrorMessages.missingItemMessage);
     }
 
-    //check if id is correct type
-    if(typeof spaceshipData.id != 'string'){
-        return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
-    }
+    //type gard to ensure that each paramater is of correct type
+    IOHandler.stringErrorChecking(spaceshipData.id);
 
     return IOHandler.returnSuccess('');//use as a dummy response to signify no errors
 }

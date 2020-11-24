@@ -35,9 +35,9 @@ const errorChecking = (locationData: {[key: string]: any}): {statusCode: number,
     }
 
     //type gard to ensure that each paramater is of correct type
-    if(typeof locationData.id != 'string' || typeof locationData.cityName != 'string' || typeof locationData.planetName != 'string'){
-        return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
-    }
+    IOHandler.stringErrorChecking(locationData.id);
+    IOHandler.stringErrorChecking(locationData.cityName);
+    IOHandler.stringErrorChecking(locationData.planetName);
 
     if(typeof locationData.totalAvailableCapacity != 'number'){
         return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);

@@ -31,10 +31,9 @@ const errorChecking = (spaceshipData: {[key: string]: any}): {statusCode: number
         return IOHandler.returnError400(IOErrorMessages.missingItemMessage);
     }
 
-    //check if id and newStatus is correct type
-    if(typeof spaceshipData.id != 'string' || typeof spaceshipData.newStatus != 'string'){
-        return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
-    }
+    //type gard to ensure that each paramater is of correct type
+    IOHandler.stringErrorChecking(spaceshipData.id);
+    IOHandler.stringErrorChecking(spaceshipData.newStatus);
 
     //Make sure that newStatus is only of type [DECOMMISSIONED | MAINTENANCE | OPERATIONAL]
     if(spaceshipData.newStatus != 'DECOMMISSIONED' && spaceshipData.newStatus != 'MAINTENANCE' && 
