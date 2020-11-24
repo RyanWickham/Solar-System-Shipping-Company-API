@@ -10,44 +10,37 @@ This project uses:
 - Serverless
 
 ## Endpoints
-
-### Add a Location
-
-Post Request
-{url}/location
-
-Requires a JSON string to be submitted with this request
-{
-id: string,
-cityName:string,
-planetName: string
-}
-
-## Data Tables
-This is the curent layout of the data needed for this project:
-
-Spaceship {<br/>
-__id: String,<br/>
-__name: String,<br/>
-__model: String,<br/>
-__locationID: String, //used to directly link the spacship and it's location without duplicate data in database.<br/>
-__status: [DECOMISSIONED | MAINTENANCE | OPERATIONAL] //Probally need a ENUM for this.<br/>
-}<br/>
-<br/>
-
-Location {<br/>
-__id: String,<br/>
-__cityName: String,<br/>
-__planetName: String,<br/>
-__totalAvailableCapacity: number,<br/>
-__currentCapacity: number //Used to track the total amount of space is currently available within this location (to check if it is full or not)<br/>
-}<br/>
+HTTP Method | Path | Description | Required JSON
+------------|------|-------------|---------------
+post | /location | Adds a location | {id: string, cityName: string, planetName: string, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}
+delete | /loation | Removes a location | {id: string}
+get | /location/help | Displays information about locatin APIs | NULL
+post | /spaceship | Adds a spaceship | {id: string, name: string, model: string, locationID: string, status: string}
+put | /spaceship/status | Updates a spaceship's status | {id: string, newStatus: string}
+delete | /spaceship | Removes a spaceship | {id: string}
+get | /spaceship/help | Displays information about spaceship's APIs | NULL
+put | /travel | Updates infomation for a spaceship to travel to new destination| {spaceshipID: string, distinationID: string}
+get | /travel/help | Displays information about travel's APIs | NULL
 
 ## Backlog
-- [ ] Add spaceship endpoint
-- [ ] Add location endpoint
-- [ ] Update Spaceship endpoint
-- [ ] Remove Spaceship endpoint
-- [ ] Remove location endpoint
-- [ ] travel functionality endpoint
-- [ ] connect AWS DynamoDB
+- [x] API Endpoints
+  - [x] Add spaceship endpoint
+  - [x] Add location endpoint
+  - [x] Update Spaceship endpoint
+  - [x] Remove Spaceship endpoint
+  - [x] Remove location endpoint
+  - [x] travel functionality endpoint
+- [ ] Services
+  - [ ] Add spaceship service functionalty
+  - [ ] Add location service functionalty
+  - [ ] Update Spaceship service functionalty
+  - [ ] Remove Spaceship service functionalty
+  - [ ] Remove location service functionalty
+  - [ ] travel functionality service functionalty
+- [ ] Database
+  - [ ] Create adding spaceship link
+  - [ ] Create adding location link
+  - [ ] Create updating spaceship link
+  - [ ] Create removing spaceship link
+  - [ ] Create removing spaceship link
+  - [ ] Create travel functionaly link
