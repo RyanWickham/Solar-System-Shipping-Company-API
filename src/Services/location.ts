@@ -1,18 +1,17 @@
-
-const addLocationService = (data) => {
+export const addLocationService = (data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
     return {
         message: "Location Added: ID: " + data.id + ", city name: " + data.cityName + ", planet name: " + data.planetName
             + ", total capacity: " + data.totalAvailableCapacity + ", curent amount of space used: " + data.currentAmountOfCapacityUsed,
     }
 }
 
-const deleteLocationService = (data) => {
+export const deleteLocationService = (data: {id: string}) => {
     return {
         message: "Location with ID: " + data.id + ", was sent to be deleted."
     }
 }
 
-const locationHelpService = () => {
+export const locationHelpService = () => {
     return {
         message: "Location Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /Location.",
         post: {
@@ -26,10 +25,4 @@ const locationHelpService = () => {
             id: 'required string -> id of location to be deleted'
         }
     }
-}
-
-export default {
-    addLocation: addLocationService,
-    deleteLocation: deleteLocationService,
-    locationHelp: locationHelpService,
 }

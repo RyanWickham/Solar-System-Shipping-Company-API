@@ -5,17 +5,17 @@ import {IOHandler, IOErrorMessages} from '../IO/index';
 
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
     //gets the body of the event as a JSON object
-    const locationToDelete = IOHandler.bodyJSON(event);
+    const spaceshipToDelete = IOHandler.bodyJSON(event);
 
     //error checking to ensure the passes paramaters are correct
-    const errorResult: {statusCode: number, body: string} = errorChecking(locationToDelete);
+    const errorResult: {statusCode: number, body: string} = errorChecking(spaceshipToDelete);
 
     if(errorResult.statusCode != 200){
         return errorResult;
     }
 
     //sends the location off to be be delt with -> returns an a message to be sent to the client
-    const result = service.deleteLocation(locationToDelete);
+    const result = service.deleteSpaceship(spaceshipToDelete);
     return IOHandler.returnSuccess(result);
 }
 

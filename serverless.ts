@@ -62,7 +62,18 @@ const serverlessConfiguration: Serverless = {
           }
         }
       ]
-    }
+    },
+    deleteSpaceship: {
+      handler: './src/handler/deleteSpaceship.handler',
+      events: [
+        {
+          http: {
+            method: 'delete',
+            path: 'spaceship',
+          }
+        }
+      ]
+    },
   }
 }
 
