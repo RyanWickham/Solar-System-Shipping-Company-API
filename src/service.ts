@@ -1,12 +1,12 @@
 
-const addLocationService = (data) => {
+const addLocationService = (data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
     return {
         message: "Location Added: ID: " + data.id + ", city name: " + data.cityName + ", planet name: " + data.planetName
             + ", total capacity: " + data.totalAvailableCapacity + ", curent amount of space used: " + data.currentAmountOfCapacityUsed,
     }
 }
 
-const deleteLocationService = (data) => {
+const deleteLocationService = (data: {id: string}) => {
     return {
         message: "Location with ID: " + data.id + ", was sent to be deleted."
     }
@@ -28,8 +28,15 @@ const locationHelpService = () => {
     }
 }
 
+const deleteSpaceshipService = (data: {id: string}) => {
+    return {
+        message: "Spaceship with ID: " + data.id + ", was sent to be deleted."
+    }
+}
+
 export default {
     addLocation: addLocationService,
     deleteLocation: deleteLocationService,
     locationHelp: locationHelpService,
+    deleteSpaceship: deleteSpaceshipService,
 }
