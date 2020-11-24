@@ -6,6 +6,12 @@ const addLocationService = (data) => {
     }
 }
 
+const deleteLocationService = (data) => {
+    return {
+        message: "Location with ID: " + data.id + ", was sent to be deleted."
+    }
+}
+
 const locationHelpService = () => {
     return {
         message: "Location Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /Location.",
@@ -21,5 +27,6 @@ const locationHelpService = () => {
 
 export default {
     addLocation: addLocationService,
+    deleteLocation: deleteLocationService,
     locationHelp: locationHelpService,
 }
