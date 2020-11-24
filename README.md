@@ -9,7 +9,21 @@ This project uses:
 - Typescript
 - Serverless
 
-# Data Tables
+## Endpoints
+
+### Add a Location
+
+Post Request
+{url}/location
+
+Requires a JSON string to be submitted with this request
+{
+id: string,
+cityName:string,
+planetName: string
+}
+
+## Data Tables
 This is the curent layout of the data needed for this project:
 
 Spaceship {<br/>
