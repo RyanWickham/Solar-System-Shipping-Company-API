@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
-import service from '../service';
+import service from '../Services/service';
 import {IOHandler} from '../IO/index';
 
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
