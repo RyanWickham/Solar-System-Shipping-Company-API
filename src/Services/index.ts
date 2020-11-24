@@ -8,7 +8,7 @@ export default {
     deleteLocation: deleteLocationService,
     locationHelp: locationHelpService,
 
-    addSpaceShip: addSpaceshipService,
+    addSpaceship: addSpaceshipService,
     deleteSpaceship: deleteSpaceshipService,
     spaceshipHelp: spaceshipHelpService,
 }
