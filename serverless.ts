@@ -74,6 +74,17 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
+    updateSpaceshipStatus: {
+      handler: './src/handler/updateSpaceshipStatus.handler',
+      events: [
+        {
+          http: {
+            method: 'put',
+            path: 'spaceship/status',
+          }
+        }
+      ]
+    },
     deleteSpaceship: {
       handler: './src/handler/deleteSpaceship.handler',
       events: [
@@ -86,7 +97,7 @@ const serverlessConfiguration: Serverless = {
       ]
     },
     spaceshipHelp: {
-      handler: './src/handler/spaceShipHelp.handler',
+      handler: './src/handler/spaceshipHelp.handler',
       events: [
         {
           http: {

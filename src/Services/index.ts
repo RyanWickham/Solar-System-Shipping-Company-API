@@ -1,5 +1,5 @@
 import {addLocationService, deleteLocationService, locationHelpService} from './location';
-import {addSpaceshipService, deleteSpaceshipService, spaceshipHelpService} from './spaceship';
+import {addSpaceshipService, updateSpaceshipStatusService, deleteSpaceshipService, spaceshipHelpService} from './spaceship';
 
 
 
@@ -9,6 +9,7 @@ export default {
     locationHelp: locationHelpService,
 
     addSpaceship: addSpaceshipService,
+    updateSpaceshipStatus: updateSpaceshipStatusService,
     deleteSpaceship: deleteSpaceshipService,
     spaceshipHelp: spaceshipHelpService,
 }
