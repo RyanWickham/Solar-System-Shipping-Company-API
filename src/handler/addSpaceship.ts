@@ -35,10 +35,11 @@ const errorChecking = (spaceshipData: {[key: string]: any}): {statusCode: number
     }
 
     //type gard to ensure that each paramater is of correct type
-    if(typeof spaceshipData.id != 'string' || typeof spaceshipData.name != 'string' || typeof spaceshipData.model != 'string' ||
-        typeof spaceshipData.locationID != 'string' || typeof spaceshipData.status != 'string'){
-        return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
-    }
+    IOHandler.stringErrorChecking(spaceshipData.id);
+    IOHandler.stringErrorChecking(spaceshipData.name);
+    IOHandler.stringErrorChecking(spaceshipData.model);
+    IOHandler.stringErrorChecking(spaceshipData.locationID);
+    IOHandler.stringErrorChecking(spaceshipData.status);
 
     //Make sure that status is only of type [DECOMMISSIONED | MAINTENANCE | OPERATIONAL]
     if(spaceshipData.status != 'DECOMMISSIONED' && spaceshipData.status != 'MAINTENANCE' && spaceshipData.status != 'OPERATIONAL'){
