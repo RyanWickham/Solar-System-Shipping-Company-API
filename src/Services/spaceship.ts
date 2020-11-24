@@ -1,18 +1,18 @@
 
-export const addSpaceshipService = (data: {id: string, name: string, model: string, locationID: string, status: string}) => {
+export const addSpaceshipService = (io: {[key: string]: any}, data: {id: string, name: string, model: string, locationID: string, status: string}) => {
     return {
         message: "Spaceship Added: ID: " + data.id + ", name: " + data.name + ", model: " + data.model
         + ", Location ID " + data.locationID + ", status: " + data.status,
     }
 }
 
-export const updateSpaceshipStatusService = (data: {id: string, newStatus: string}) => {
+export const updateSpaceshipStatusService = (io: {[key: string]: any}, data: {id: string, newStatus: string}) => {
     return {
         message: "Spaceship with ID: " + data.id + ", was sent to have it's status to: " + data.newStatus + ".",
     }
 }
 
-export const deleteSpaceshipService = (data: {id: string}) => {
+export const deleteSpaceshipService = (io: {[key: string]: any}, data: {id: string}) => {
     return {
         message: "Spaceship with ID: " + data.id + ", was sent to be deleted.",
     }

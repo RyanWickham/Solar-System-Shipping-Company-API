@@ -1,11 +1,11 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import service from '../Services/index';
-import {IOHandler, IOErrorMessages} from '../IO/index';
+import io from '../IO/index';
 
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
     //gets the body of the event as a JSON object
-    const locationData = IOHandler.bodyJSON(event);
+    const locationData = io.handler.bodyJSON(event);
 
     //error checking to ensure the passes paramaters are correct
     const errorResult: {statusCode: number, body: string} = errorChecking(locationData);
@@ -24,23 +24,24 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
     }
 
     //sends the location off to be be delt with -> returns an a message to be sent to the client
-    const result = service.addLocation(locationToAdd);
-    return IOHandler.returnSuccess(result);
+    const result = await service.addLocation(io, locationToAdd);
+
+    return io.handler.returnSuccess(result);
 }
 
 const errorChecking = (locationData: {[key: string]: any}): {statusCode: number, body: string} => {
     //Make sure each element needed was included in request
     if(!locationData.id || !locationData.cityName || !locationData.planetName || !locationData.totalAvailableCapacity){
-        return IOHandler.returnError400(IOErrorMessages.missingItemMessage);
+        return io.handler.returnError400(io.IOErrorMessages.missingItemMessage);
     }
 
     //type gard to ensure that each paramater is of correct type
-    IOHandler.stringErrorChecking(locationData.id);
-    IOHandler.stringErrorChecking(locationData.cityName);
-    IOHandler.stringErrorChecking(locationData.planetName);
+    io.handler.stringErrorChecking(locationData.id);
+    io.handler.stringErrorChecking(locationData.cityName);
+    io.handler.stringErrorChecking(locationData.planetName);
 
     if(typeof locationData.totalAvailableCapacity != 'number'){
-        return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
+        return io.handler.returnError400(io.IOErrorMessages.paramaterHasWrongTypeMessage);
     }
 
     //currentAmountOfCapacityUsed is optional and need extra checks
@@ -48,15 +49,15 @@ const errorChecking = (locationData: {[key: string]: any}): {statusCode: number,
         locationData.currentAmountOfCapacityUsed = 0;
 
     }else if(typeof locationData.currentAmountOfCapacityUsed != 'number'){//check it is a number
-        return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
+        return io.handler.returnError400(io.IOErrorMessages.paramaterHasWrongTypeMessage);
 
     }
     
     //check the capacity limit is correct
     if(locationData.currentAmountOfCapacityUsed > locationData.totalAvailableCapacity){
         //more items are in location than the capacity is allowed
-        return IOHandler.returnError400(IOErrorMessages.invalidLocationCapacityMessage);
+        return io.handler.returnError400(io.IOErrorMessages.invalidLocationCapacityMessage);
     }
 
-    return IOHandler.returnSuccess('');//use as a dummy response to signify no errors
+    return io.handler.returnSuccess('');//use as a dummy response to signify no errors
 }

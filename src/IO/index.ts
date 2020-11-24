@@ -1,4 +1,6 @@
-export const IOHandler = {
+import { dynamo } from './db';
+
+const IOHandler = {
     bodyJSON: data => JSON.parse(data.body),
 
     returnSuccess: data => ({
@@ -14,7 +16,7 @@ export const IOHandler = {
     stringErrorChecking: (item) => stringErrorChecking(item),
 }
 
-export const IOErrorMessages = {
+const IOErrorMessages = {
     missingItemMessage: (type: string) => ({message: "ERROR request does not include all required paramaters. Try '/"+type+"/help' to see requirements"}),
     paramaterHasWrongTypeMessage: (type: string) => ({message: "ERROR a paramater provided is of wrong type. Try '/"+type+"/help' to see requirements"}),
     invalidLocationCapacityMessage: {message: "ERROR more items are in location than the capacity is allowed -> currentAmountOfCapacityUsed > totalAvailableCapacity"},
@@ -37,4 +39,10 @@ const stringErrorChecking = (itemToCheck: any): {statusCode: number, body: strin
     }
 
     return IOHandler.returnSuccess('');//use as a dummy response to signify no errors
+}
+
+export default {
+    handler: IOHandler,
+    IOErrorMessages: IOErrorMessages,
+    database: dynamo,
 }

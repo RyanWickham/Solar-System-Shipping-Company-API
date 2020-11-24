@@ -1,4 +1,4 @@
-export const spaceshipTravelToService = (data: {spaceshipID: string, distinationID: string}) => {
+export const spaceshipTravelToService = (io: {[key: string]: any}, data: {spaceshipID: string, distinationID: string}) => {
     return {
         message: "Spaceship ID: " + data.spaceshipID + ", traveling to location ID: " + data.distinationID + "."
     }
