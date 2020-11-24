@@ -41,8 +41,8 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
-    deleteLocation: {
-      handler: './src/handler/deleteLocation.handler',
+    removeLocation: {
+      handler: './src/handler/removeLocation.handler',
       events: [
         {
           http: {
@@ -85,8 +85,8 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
-    deleteSpaceship: {
-      handler: './src/handler/deleteSpaceship.handler',
+    removeSpaceship: {
+      handler: './src/handler/removeSpaceship.handler',
       events: [
         {
           http: {

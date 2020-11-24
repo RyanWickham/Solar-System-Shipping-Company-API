@@ -14,15 +14,24 @@ export const deleteLocationService = (data: {id: string}) => {
 export const locationHelpService = () => {
     return {
         message: "Location Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /location.",
-        post: {
-            id: 'required string',
-            cityName: 'required string',
-            planetName: 'required string',
-            totalAvailableCapacity: 'required number',
-            currentAmountOfCapacityUsed: 'optional number -> default to 0, currentAmountOfCapacityUsed <= totalAvailableCapacity'
+        addLocation: {
+            path: '/location',
+            HTTPStatusCode: 'post',
+            requiredJSON:  {
+                id: 'required string',
+                cityName: 'required string',
+                planetName: 'required string',
+                totalAvailableCapacity: 'required number',
+                currentAmountOfCapacityUsed: 'optional number -> default to 0, currentAmountOfCapacityUsed <= totalAvailableCapacity'
+            },
         },
-        delete: {
-            id: 'required string -> id of location to be deleted'
-        }
+        removeLocation: {
+            path: '/location',
+            HTTPStatusCode: 'delete',
+            requiredJSON: {
+                id: 'required string -> id of location to be deleted'
+            },
+        },
+        
     }
 }

@@ -5,13 +5,22 @@ import {IOHandler, IOErrorMessages} from '../IO/index';
 
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
     //gets the body of the event as a JSON object
-    const locationToAdd = IOHandler.bodyJSON(event);
+    const locationData = IOHandler.bodyJSON(event);
 
     //error checking to ensure the passes paramaters are correct
-    const errorResult: {statusCode: number, body: string} = errorChecking(locationToAdd);
+    const errorResult: {statusCode: number, body: string} = errorChecking(locationData);
 
     if(errorResult.statusCode != 200){
         return errorResult;
+    }
+
+    //create an object that only has the needed values -> errorChecking() made sure they exists
+    const locationToAdd: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number} = {
+        id: locationData.id,
+        cityName: locationData.cityName,
+        planetName: locationData.planetName,
+        totalAvailableCapacity: locationData.totalAvailableCapacity,
+        currentAmountOfCapacityUsed: locationData.currentAmountOfCapacityUsed
     }
 
     //sends the location off to be be delt with -> returns an a message to be sent to the client
@@ -19,29 +28,32 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
     return IOHandler.returnSuccess(result);
 }
 
-const errorChecking = (locationToAdd: {[key: string]: any}): {statusCode: number, body: string} => {
+const errorChecking = (locationData: {[key: string]: any}): {statusCode: number, body: string} => {
     //Make sure each element needed was included in request
-    if(!locationToAdd.id || !locationToAdd.cityName || !locationToAdd.planetName || !locationToAdd.totalAvailableCapacity){
+    if(!locationData.id || !locationData.cityName || !locationData.planetName || !locationData.totalAvailableCapacity){
         return IOHandler.returnError400(IOErrorMessages.missingItemMessage);
     }
 
     //type gard to ensure that each paramater is of correct type
-    if(typeof locationToAdd.id != 'string' || typeof locationToAdd.cityName != 'string' || typeof locationToAdd.planetName != 'string'){
+    if(typeof locationData.id != 'string' || typeof locationData.cityName != 'string' || typeof locationData.planetName != 'string'){
         return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
     }
 
-    if(typeof locationToAdd.totalAvailableCapacity != 'number'){
+    if(typeof locationData.totalAvailableCapacity != 'number'){
         return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
     }
 
     //currentAmountOfCapacityUsed is optional and need extra checks
-    if(!locationToAdd.currentAmountOfCapacityUsed){
-        locationToAdd.currentAmountOfCapacityUsed = 0;
+    if(!locationData.currentAmountOfCapacityUsed){
+        locationData.currentAmountOfCapacityUsed = 0;
 
-    }else if(typeof locationToAdd.currentAmountOfCapacityUsed != 'number'){//check it is a number
+    }else if(typeof locationData.currentAmountOfCapacityUsed != 'number'){//check it is a number
         return IOHandler.returnError400(IOErrorMessages.paramaterHasWrongTypeMessage);
 
-    }else if(locationToAdd.currentAmountOfCapacityUsed > locationToAdd.totalAvailableCapacity){//check the capacity limit is correct
+    }
+    
+    //check the capacity limit is correct
+    if(locationData.currentAmountOfCapacityUsed > locationData.totalAvailableCapacity){
         //more items are in location than the capacity is allowed
         return IOHandler.returnError400(IOErrorMessages.invalidLocationCapacityMessage);
     }
