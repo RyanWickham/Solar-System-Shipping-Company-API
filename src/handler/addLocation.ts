@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
     }
 
     //create an object that only has the needed values -> errorChecking() made sure they exists
-    const locationToAdd: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number} = {
+    const locationToAdd: {id: string, cityName: string, planetName: string, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number} = {
         id: locationData.id,
         cityName: locationData.cityName,
         planetName: locationData.planetName,
