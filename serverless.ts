@@ -41,6 +41,17 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
+    deleteLocation: {
+      handler: './src/handler/deleteLocation.handler',
+      events: [
+        {
+          http: {
+            method: 'delete',
+            path: 'location',
+          }
+        }
+      ]
+    },
     locationHelp: {
       handler: './src/handler/locationHelp.handler',
       events: [
