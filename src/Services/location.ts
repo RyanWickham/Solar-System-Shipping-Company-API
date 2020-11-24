@@ -1,11 +1,23 @@
-export const addLocationService = (data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
+export const addLocationService = async (io: {[key: string]: any}, 
+        data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
+    
+    //create record to add to database
+    const recordForDatabase = {
+        tableName: io.database.tableNames.locations,
+        item: data
+    }
+
+    //send to database
+    const result = await io.database.put(recordForDatabase);
+
     return {
         message: "Location Added: ID: " + data.id + ", city name: " + data.cityName + ", planet name: " + data.planetName
             + ", total capacity: " + data.totalAvailableCapacity + ", curent amount of space used: " + data.currentAmountOfCapacityUsed,
+        response: result,
     }
 }
 
-export const deleteLocationService = (data: {id: string}) => {
+export const deleteLocationService = (io: {[key: string]: any}, data: {id: string}) => {
     return {
         message: "Location with ID: " + data.id + ", was sent to be deleted."
     }

@@ -2,7 +2,6 @@ import {addLocationService, deleteLocationService, locationHelpService} from './
 import {addSpaceshipService, updateSpaceshipStatusService, deleteSpaceshipService, spaceshipHelpService} from './spaceship';
 import {spaceshipTravelToService, travelHelpService} from "./travel";
 
-
 export default {
     //Location Services
     addLocation: addLocationService,

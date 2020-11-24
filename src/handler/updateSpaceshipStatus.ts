@@ -1,11 +1,11 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import service from '../Services/index';
-import {IOHandler, IOErrorMessages} from '../IO/index';
+import io from '../IO/index';
 
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
     //gets the body of the event as a JSON object
-    const spaceshipData = IOHandler.bodyJSON(event);
+    const spaceshipData = io.handler.bodyJSON(event);
 
     //error checking to ensure the passes paramaters are correct
     const errorResult: {statusCode: number, body: string} = errorChecking(spaceshipData);
@@ -21,26 +21,26 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
     }
 
     //sends the location off to be be delt with -> returns an a message to be sent to the client
-    const result = service.updateSpaceshipStatus(spaceshipToUpdate);
-    return IOHandler.returnSuccess(result);
+    const result = service.updateSpaceshipStatus(io, spaceshipToUpdate);
+    return io.handler.returnSuccess(result);
 }
 
 const errorChecking = (spaceshipData: {[key: string]: any}): {statusCode: number, body: string} => {
     //check if id and newStatus was provided
     if(!spaceshipData.id || !spaceshipData.newStatus){
-        return IOHandler.returnError400(IOErrorMessages.missingItemMessage);
+        return io.handler.returnError400(io.IOErrorMessages.missingItemMessage);
     }
 
     //type gard to ensure that each paramater is of correct type
-    IOHandler.stringErrorChecking(spaceshipData.id);
-    IOHandler.stringErrorChecking(spaceshipData.newStatus);
+    io.handler.stringErrorChecking(spaceshipData.id);
+    io.handler.stringErrorChecking(spaceshipData.newStatus);
 
     //Make sure that newStatus is only of type [DECOMMISSIONED | MAINTENANCE | OPERATIONAL]
     if(spaceshipData.newStatus != 'DECOMMISSIONED' && spaceshipData.newStatus != 'MAINTENANCE' && 
         spaceshipData.newStatus != 'OPERATIONAL'){
 
-        return IOHandler.returnError400(IOErrorMessages.spaceshipStatusInvalidValue);
+        return io.handler.returnError400(io.IOErrorMessages.spaceshipStatusInvalidValue);
     }
 
-    return IOHandler.returnSuccess('');//use as a dummy response to signify no errors
+    return io.handler.returnSuccess('');//use as a dummy response to signify no errors
 }
