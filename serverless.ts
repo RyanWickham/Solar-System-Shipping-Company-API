@@ -41,6 +41,17 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
+    locationHelp: {
+      handler: './src/handler/locationHelp.handler',
+      events: [
+        {
+          http: {
+            method: 'get',
+            path: 'location/help',
+          }
+        }
+      ]
+    }
   }
 }
 
