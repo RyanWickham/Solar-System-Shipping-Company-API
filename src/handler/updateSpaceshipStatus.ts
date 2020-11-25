@@ -36,8 +36,8 @@ const errorChecking = (spaceshipData: {[key: string]: any}): {statusCode: number
     io.handler.stringErrorChecking(spaceshipData.newStatus);
 
     //Make sure that newStatus is only of type [DECOMMISSIONED | MAINTENANCE | OPERATIONAL]
-    if(spaceshipData.newStatus != 'DECOMMISSIONED' && spaceshipData.newStatus != 'MAINTENANCE' && 
-        spaceshipData.newStatus != 'OPERATIONAL'){
+    if(spaceshipData.newStatus != io.spaceshipStatusValues.decommissioned && spaceshipData.newStatus != io.spaceshipStatusValues.maintenance && 
+        spaceshipData.newStatus != io.spaceshipStatusValues.operational){
 
         return io.handler.returnError400(io.IOErrorMessages.spaceshipStatusInvalidValue);
     }

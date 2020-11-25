@@ -15,15 +15,36 @@ export const addLocationService = async (io: {[key: string]: any},
 }
 
 export const deleteLocationService = async (io: {[key: string]: any}, data: {id: string}) => {
+    //check if there are any spaceships at this location
+    const locationIDResponse = await io.database.get({
+        tableName: io.database.tableNames.locations,
+        item: data
+    });
+
+    if(locationIDResponse.item == null){
+        return {
+            message: "Location with ID: " + data.id + ", does not exists.",
+            response: locationIDResponse,
+        }
+    }
+
+    //check if there is currently any spaceships at this locaiton
+    if(locationIDResponse.item.currentAmountOfCapacityUsed > 0){
+        return {
+            message: "Location with ID: " + data.id + ", currently has spaceships being stored -> can not be deleted.",
+            response: locationIDResponse,
+        }
+    }
+
     //create record to delete/send to database
-    const result = await io.database.delete({
+    const locationDeleteResponse = await io.database.delete({
         tableName: io.database.tableNames.locations,
         item: data
     });
     
     return {
         message: "Location with ID: " + data.id + ", was sent to be deleted.",
-        response: result,
+        response: locationDeleteResponse,
     }
 }
 

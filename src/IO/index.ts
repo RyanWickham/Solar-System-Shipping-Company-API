@@ -41,8 +41,15 @@ const stringErrorChecking = (itemToCheck: any): {statusCode: number, body: strin
     return IOHandler.returnSuccess('');//use as a dummy response to signify no errors
 }
 
+const spaceshipStatusValues = {
+    decommissioned: "DECOMMISSIONED",
+    maintenance: "MAINTENANCE",
+    operational: "OPERATIONAL",
+}
+
 export default {
     handler: IOHandler,
     IOErrorMessages: IOErrorMessages,
     database: dynamo,
+    spaceshipStatusValues: spaceshipStatusValues,
 }
