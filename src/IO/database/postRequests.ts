@@ -9,7 +9,7 @@ export const addToTable = (tableName: string, item: {[key: string]: any}): {data
             return addItemToSpaceshipTable(item);
         default:
             return {
-                databaseMessage: "Error: table was not found, item was not added."
+                databaseMessage: "Error: table was not found, item could not be added."
             }
     }
 }

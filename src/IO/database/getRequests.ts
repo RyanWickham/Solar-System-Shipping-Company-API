@@ -9,7 +9,7 @@ export const getFromTable = (tableName: string, key: {[key: string]: any}): {dat
             return getItemFromSpaceshipTable(key);
         default:
             return {
-                databaseMessage: "Error: table was not found, item was not added."
+                databaseMessage: "Error: table was not found, item could not be retrieved."
             }
     }
 }

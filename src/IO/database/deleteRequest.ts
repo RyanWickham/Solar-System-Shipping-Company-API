@@ -9,7 +9,7 @@ export const deleteFromTable = (tableName: string, item: {[key: string]: any}): 
             return deleteItemFromSpaceshipTable(item);
         default:
             return {
-                databaseMessage: "Error: table was not found, item was not added."
+                databaseMessage: "Error: table was not found, item could not be deleted."
             }
     }
 }

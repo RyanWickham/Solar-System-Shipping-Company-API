@@ -1,6 +1,7 @@
 import { addToTable } from "./database/postRequests";
 import { getFromTable } from "./database/getRequests";
 import { deleteFromTable } from "./database/deleteRequest";
+import { changeItemInTable } from "./database/putRequest";
 
 const aws = require('aws-sdk');
 const db = new aws.DynamoDB.DocumentClient({
@@ -23,7 +24,7 @@ export const dynamo = {
             Item: data.item
         }
 
-        // const result = await db.put(params).promise();
+        // const result = await db.post(params).promise();
         // return result;
 
         return addToTable(params.TableName, params.Item);
@@ -46,5 +47,7 @@ export const dynamo = {
         return deleteFromTable(data.tableName, data.key);
     },
 
-
+    put: async (data: {tableName: string, key: {[key: string]: any}}) => {
+        return changeItemInTable(data.tableName, data.key);
+    },
 }
