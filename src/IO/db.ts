@@ -30,11 +30,11 @@ export const dynamo = {
         return addToTable(params.TableName, params.Item);
     },
 
-    get: async (data: {tableName: string, key: {[key: string]: any}}) => {
+    get: async (data: {tableName: string, item: {[key: string]: any}}) => {
         //formate needed for DynamoDB
         const params = {
             TableName: data.tableName,
-            Key: data.key
+            Key: data.item
         }
 
         // const result = await db.get(params).promise();
@@ -43,11 +43,11 @@ export const dynamo = {
         return getFromTable(params.TableName, params.Key);
     },
 
-    delete: async (data: {tableName: string, key: {[key: string]: any}}) => {
-        return deleteFromTable(data.tableName, data.key);
+    delete: async (data: {tableName: string, item: {[key: string]: any}}) => {
+        return deleteFromTable(data.tableName, data.item);
     },
 
-    put: async (data: {tableName: string, key: {[key: string]: any}}) => {
-        return changeItemInTable(data.tableName, data.key);
+    put: async (data: {tableName: string, item: {[key: string]: any}}) => {
+        return changeItemInTable(data.tableName, data.item);
     },
 }

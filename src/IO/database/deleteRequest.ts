@@ -28,7 +28,7 @@ const deleteItemFromLocationTable = (item: {[key: string]: any}): {databaseMessa
             }
         }
     }
-
+    
     //item was not found
     return {
         databaseMessage: "Item was not found -> did not delete."

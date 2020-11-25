@@ -2,7 +2,7 @@ export const addLocationService = async (io: {[key: string]: any},
         data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
 
     //create record to add/send to database
-    const result = await io.database.put({
+    const result = await io.database.post({
         tableName: io.database.tableNames.locations,
         item: data
     });
@@ -14,9 +14,16 @@ export const addLocationService = async (io: {[key: string]: any},
     }
 }
 
-export const deleteLocationService = (io: {[key: string]: any}, data: {id: string}) => {
+export const deleteLocationService = async (io: {[key: string]: any}, data: {id: string}) => {
+    //create record to delete/send to database
+    const result = await io.database.delete({
+        tableName: io.database.tableNames.locations,
+        item: data
+    });
+    
     return {
-        message: "Location with ID: " + data.id + ", was sent to be deleted."
+        message: "Location with ID: " + data.id + ", was sent to be deleted.",
+        response: result,
     }
 }
 
