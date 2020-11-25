@@ -53,8 +53,21 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
 }
 
 export const updateSpaceshipStatusService = async (io: {[key: string]: any}, data: {id: string, newStatus: string}) => {
+
+    //error checking was already on on newStatus -> it is only a vaild status value
+    const spaceshipUpdateStatusResponse = await io.database.put({
+        tableName: io.database.tableNames.spaceships,
+        item: {
+            id: data.id,
+            newStatus: data.newStatus,
+        },
+    });
+
     return {
         message: "Spaceship with ID: " + data.id + ", was sent to have it's status to: " + data.newStatus + ".",
+        response: {
+            spaceshipUpdateStatusResponse: spaceshipUpdateStatusResponse,
+        }
     }
 }
 
@@ -80,7 +93,7 @@ export const deleteSpaceshipService = async (io: {[key: string]: any}, data: {id
         tableName: io.database.tableNames.spaceships,
         item: data
     });
-    
+
     //if item was deleted -> decreas location capacity
     if(spaceshipDeleteResult.itemWasDeleted){
         //Update capacity of location to +1

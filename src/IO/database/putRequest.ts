@@ -50,7 +50,7 @@ const changeItemInSpaceshipTable = (item: {[key: string]: string}): {databaseMes
             spaceshipTable[i].status = item.newStatus;
 
             return {
-                databaseMessage: "Status of: " + spaceshipTable[i] + ", was changed from " + oldStatus + " to " + spaceshipTable[i].status + ".",
+                databaseMessage: "Status of: " + spaceshipTable[i].id + ", was changed from " + oldStatus + " to " + spaceshipTable[i].status + ".",
             }
         }
     }
