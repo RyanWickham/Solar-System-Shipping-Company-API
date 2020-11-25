@@ -1,12 +1,13 @@
 import { locationTable, spaceshipTable, Location, Spaceship } from "./tables";
 import io from "../index";
 
-export const getFromTable = (tableName: string, key: {[key: string]: any}): {databaseMessage: string} => {
+export const getFromTable = (tableName: string, item: {[key: string]: any}): {databaseMessage: string} => {
+    
     switch(tableName){
         case io.database.tableNames.locations:
-            return getItemFromLocationTable(key);
+            return getItemFromLocationTable(item);
         case io.database.tableNames.spaceships:
-            return getItemFromSpaceshipTable(key);
+            return getItemFromSpaceshipTable(item);
         default:
             return {
                 databaseMessage: "Error: table was not found, item could not be retrieved."
@@ -15,9 +16,12 @@ export const getFromTable = (tableName: string, key: {[key: string]: any}): {dat
 }
 
 const getItemFromLocationTable = (item: {[key: string]: any}): {databaseMessage: string, item: Location} => {
+
     //check if item exists
     for(let i=0; i<locationTable.length; i++){
+        console.log("CHECK: ",locationTable[i], item)
         if(locationTable[i].id == item.id){
+            console.log("item found");
             //item was found
             return {
                 databaseMessage: "Item was found.",

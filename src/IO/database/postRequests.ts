@@ -14,13 +14,14 @@ export const addToTable = (tableName: string, item: {[key: string]: any}): {data
     }
 }
 
-const addItemToLocationTable = (item: {[key: string]: any}): {databaseMessage: string} => {
+const addItemToLocationTable = (item: {[key: string]: any}): {databaseMessage: string, itemAlreadyAdded: boolean} => {
     //check if item already exists
     for(let i=0; i<locationTable.length; i++){
         if(locationTable[i].id === item.id){
             //item exists
             return {
                 databaseMessage: "Item already exists, did not add item.",
+                itemAlreadyAdded: true,
             }
         }
     }
@@ -38,17 +39,19 @@ const addItemToLocationTable = (item: {[key: string]: any}): {databaseMessage: s
     locationTable.push(itemToAdd);
 
     return {
-        databaseMessage: "Item was added successfuly."
+        databaseMessage: "Item was added successfuly.",
+        itemAlreadyAdded: false,
     }
 }
 
-const addItemToSpaceshipTable = (item: {[key: string]: string}): {databaseMessage: string} => {
+const addItemToSpaceshipTable = (item: {[key: string]: string}): {databaseMessage: string, itemAlreadyAdded: boolean} => {
     //check if item already exists
     for(let i=0; i<spaceshipTable.length; i++){
         if(spaceshipTable[i].id === item.id){
             //item exists
             return {
                 databaseMessage: "Item already exists, did not add item.",
+                itemAlreadyAdded: true,
             }
         }
     }
@@ -65,6 +68,7 @@ const addItemToSpaceshipTable = (item: {[key: string]: string}): {databaseMessag
 
     spaceshipTable.push(itemToAdd);
     return {
-        databaseMessage: "Item was added successfuly."
+        databaseMessage: "Item was added successfuly.",
+        itemAlreadyAdded: false,
     }
 }

@@ -24,7 +24,7 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
     }
 
     //sends the location off to be be delt with -> returns an a message to be sent to the client
-    const result = service.addSpaceship(io, spaceshipToAdd);
+    const result = await service.addSpaceship(io, spaceshipToAdd);
     return io.handler.returnSuccess(result);
 }
 

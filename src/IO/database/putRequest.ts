@@ -1,5 +1,6 @@
 import { locationTable, spaceshipTable} from "./tables";
 import io from "../index";
+import { dynamo } from "../db";
 
 export const changeItemInTable = (tableName: string, item: {[key: string]: any}): {databaseMessage: string} => {
     switch(tableName){
@@ -20,10 +21,15 @@ const changeItemInLocationTable = (item: {[key: string]: any}): {databaseMessage
         if(locationTable[i].id == item.id){
             //item was found
             //decided what item to edit -> should only be used to change currentAmountOfCapacityUsed
-            locationTable[i].currentAmountOfCapacityUsed = item.operation;//operation will either be +1 or -1
+            if(item.operation == dynamo.capacityOperations.increase){
+                locationTable[i].currentAmountOfCapacityUsed += 1;
+            }else if(item.operation == dynamo.capacityOperations.decrease){
+                locationTable[i].currentAmountOfCapacityUsed -= 1;
+            }
+            
 
             return {
-                databaseMessage: "Location: " + locationTable[i].id + ", " + item.operation + " current amount in used."
+                databaseMessage: "Location: " + locationTable[i].id + ", " + item.operation + " current amount in used. (" + locationTable[i].currentAmountOfCapacityUsed + ")",
             }
         }
     }

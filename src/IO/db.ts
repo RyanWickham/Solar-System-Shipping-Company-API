@@ -14,8 +14,14 @@ const tableNames = {
     spaceships: "Spaceship",
 }
 
+const capacityOperations = {
+    increase: "INCREASE",
+    decrease: "DECREASE",
+}
+
 export const dynamo = {
     tableNames: tableNames,
+    capacityOperations: capacityOperations,
 
     post: async (data: {tableName: string, item: {[key: string]: any}}) => {
         //formate needed for DynamoDB

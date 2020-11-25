@@ -1,18 +1,64 @@
 
-export const addSpaceshipService = (io: {[key: string]: any}, data: {id: string, name: string, model: string, locationID: string, status: string}) => {
+export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: string, name: string, model: string, locationID: string, status: string}) => {
+    
+    //check to make sure locatonID is valid
+    const locationIDResponse = await io.database.get({
+        tableName: io.database.tableNames.locations,
+        item: {id: data.locationID}
+    });
+
+    if(locationIDResponse.item == null){
+        //invalid locationID
+        return {
+            message: "Invalid locationID: locationID is not linked to any location.",
+        }
+    }
+
+    //create spaceship record to add/send to database
+    const spaceshipAddingResult = await io.database.post({
+        tableName: io.database.tableNames.spaceships,
+        item: data
+    });
+
+    //if the spaceship is added -> increase the capacity
+    if(!spaceshipAddingResult.itemAlreadyAdded){
+        //Update capacity of location to +1
+        const locationIncreaseCapacityResponse = await io.database.put({
+            tableName: io.database.tableNames.locations,
+            item: {
+                id: data.locationID,
+                operation: io.database.capacityOperations.increase,
+            },
+        });
+
+        //need a return here to include the locationIncreaseCapacityResponse
+        return {
+            message: "Spaceship Added: ID: " + data.id + ", name: " + data.name + ", model: " + data.model
+            + ", Location ID " + data.locationID + ", status: " + data.status,
+            response: {
+                spaceshipAddingResponse: spaceshipAddingResult,
+                locationIncreaseCapacityResponsse: locationIncreaseCapacityResponse,
+            }
+        }
+    }
+    
+    //item wasn't added -> no need for locationIncreaseCapacityResponse
     return {
         message: "Spaceship Added: ID: " + data.id + ", name: " + data.name + ", model: " + data.model
         + ", Location ID " + data.locationID + ", status: " + data.status,
+        response: {
+            spaceshipAddingResponse: spaceshipAddingResult,
+        }
     }
 }
 
-export const updateSpaceshipStatusService = (io: {[key: string]: any}, data: {id: string, newStatus: string}) => {
+export const updateSpaceshipStatusService = async (io: {[key: string]: any}, data: {id: string, newStatus: string}) => {
     return {
         message: "Spaceship with ID: " + data.id + ", was sent to have it's status to: " + data.newStatus + ".",
     }
 }
 
-export const deleteSpaceshipService = (io: {[key: string]: any}, data: {id: string}) => {
+export const deleteSpaceshipService = async (io: {[key: string]: any}, data: {id: string}) => {
     return {
         message: "Spaceship with ID: " + data.id + ", was sent to be deleted.",
     }
