@@ -14,7 +14,7 @@ export const deleteFromTable = (tableName: string, item: {[key: string]: any}): 
     }
 }
 
-const deleteItemFromLocationTable = (item: {[key: string]: any}): {databaseMessage: string} => {
+const deleteItemFromLocationTable = (item: {[key: string]: any}): {databaseMessage: string, itemWasDeleted: boolean} => {
     //check if item exists
     for(let i=0; i<locationTable.length; i++){
         if(locationTable[i].id == item.id){
@@ -24,18 +24,20 @@ const deleteItemFromLocationTable = (item: {[key: string]: any}): {databaseMessa
             reconstructLocationTable(tableWithoutRemovedItem);
 
             return {
-                databaseMessage: "Item was Deleted."
+                databaseMessage: "Item was Deleted.",
+                itemWasDeleted: true,
             }
         }
     }
     
     //item was not found
     return {
-        databaseMessage: "Item was not found -> did not delete."
+        databaseMessage: "Item was not found -> did not delete.",
+        itemWasDeleted: false,
     }
 }
 
-const deleteItemFromSpaceshipTable = (item: {[key: string]: string}): {databaseMessage: string} => {
+const deleteItemFromSpaceshipTable = (item: {[key: string]: string}): {databaseMessage: string, itemWasDeleted: boolean} => {
     //check if item exists
     for(let i=0; i<spaceshipTable.length; i++){
         if(spaceshipTable[i].id == item.id){
@@ -45,13 +47,15 @@ const deleteItemFromSpaceshipTable = (item: {[key: string]: string}): {databaseM
             reconstructSpaceshipTable(tableWithoutRemovedItem);
 
             return {
-                databaseMessage: "Item was Deleted."
+                databaseMessage: "Item was Deleted.",
+                itemWasDeleted: true,
             }
         }
     }
 
     //item was not found
     return {
-        databaseMessage: "Item was not found -> did not delete."
+        databaseMessage: "Item was not found -> did not delete.",
+        itemWasDeleted: false,
     }
 }

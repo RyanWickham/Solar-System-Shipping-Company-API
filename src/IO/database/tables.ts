@@ -21,11 +21,17 @@ export let locationTable: Location[] = [
         planetName: "Earth",
         totalAvailableCapacity: 500,
         currentAmountOfCapacityUsed: 0
-    }
+    },
 ];
 
 export let spaceshipTable: Spaceship[] = [
-
+    {
+        id: "ss",
+        name:"ss",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"MAINTENANCE"
+    },
 ]
 
 export const reconstructLocationTable = (newTable) => {

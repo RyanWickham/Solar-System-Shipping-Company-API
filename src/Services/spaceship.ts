@@ -59,8 +59,53 @@ export const updateSpaceshipStatusService = async (io: {[key: string]: any}, dat
 }
 
 export const deleteSpaceshipService = async (io: {[key: string]: any}, data: {id: string}) => {
+    //get item's locationID -> used to adjuest location
+    const spaceshipGetResult = await io.database.get({
+        tableName: io.database.tableNames.spaceships,
+        item: {id: data.id}
+    });
+
+    //check if item exists
+    if(spaceshipGetResult.item == null){
+        return {
+            message: "Spaceship with ID: " + data.id + ", was not found -> could not delete.",
+            response: {
+                spaceshipGetResponse: spaceshipGetResult,
+            },
+        }
+    }
+
+    //create spaceship record to delete
+    const spaceshipDeleteResult = await io.database.delete({
+        tableName: io.database.tableNames.spaceships,
+        item: data
+    });
+    
+    //if item was deleted -> decreas location capacity
+    if(spaceshipDeleteResult.itemWasDeleted){
+        //Update capacity of location to +1
+        const locationIncreaseCapacityResponse = await io.database.put({
+            tableName: io.database.tableNames.locations,
+            item: {
+                id: spaceshipGetResult.item.locationID,
+                operation: io.database.capacityOperations.decrease,
+            },
+        });
+
+        return {
+            message: "Spaceship with ID: " + data.id + ", was sent to be deleted.",
+            response: {
+                spaceshipAddingResponse: spaceshipDeleteResult,
+                locationIncreaseCapacityResponse: locationIncreaseCapacityResponse,
+            },
+        }
+    }
+
     return {
-        message: "Spaceship with ID: " + data.id + ", was sent to be deleted.",
+        message: "Spaceship with ID: " + data.id + ", was not deleted.",
+        response: {
+            spaceshipAddingResponse: spaceshipDeleteResult,
+        }
     }
 }
 
