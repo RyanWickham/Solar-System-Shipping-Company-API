@@ -59,7 +59,8 @@ export const updateSpaceshipStatusService = async (io: {[key: string]: any}, dat
         tableName: io.database.tableNames.spaceships,
         item: {
             id: data.id,
-            newStatus: data.newStatus,
+            type: io.spaceshipValueUpdateValues.status,
+            value: data.newStatus,
         },
     });
 
