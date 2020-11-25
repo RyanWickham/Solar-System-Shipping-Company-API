@@ -45,13 +45,24 @@ const changeItemInSpaceshipTable = (item: {[key: string]: string}): {databaseMes
     for(let i=0; i<spaceshipTable.length; i++){
         if(spaceshipTable[i].id == item.id){
             //item was found
-            //decided what item to edit -> should only be called with status
-            const oldStatus = spaceshipTable[i].status;
-            spaceshipTable[i].status = item.newStatus;
+            //decided what item to edit
+            if(item.type == io.spaceshipValueUpdateValues.status){
+                const oldStatus = spaceshipTable[i].status;
+                spaceshipTable[i].status = item.value;
 
-            return {
-                databaseMessage: "Status of: " + spaceshipTable[i].id + ", was changed from " + oldStatus + " to " + spaceshipTable[i].status + ".",
+                return {
+                    databaseMessage: "Status of: " + spaceshipTable[i].id + ", was changed from " + oldStatus + " to " + spaceshipTable[i].status + ".",
+                }
+
+            }else if(item.type == io.spaceshipValueUpdateValues.locationID){
+                const oldlocation = spaceshipTable[i].locationID;
+                spaceshipTable[i].locationID = item.value;
+
+                return {
+                    databaseMessage: "LocationID of: " + spaceshipTable[i].id + ", was changed from " + oldlocation + " to " + spaceshipTable[i].locationID + ".",
+                }
             }
+            
         }
     }
 

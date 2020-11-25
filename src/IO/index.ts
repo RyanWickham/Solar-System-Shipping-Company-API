@@ -47,9 +47,15 @@ const spaceshipStatusValues = {
     operational: "OPERATIONAL",
 }
 
+const spaceshipValueUpdateValues = {
+    status: "STATUS",
+    locationID: "LOCATION_ID",
+}
+
 export default {
     handler: IOHandler,
     IOErrorMessages: IOErrorMessages,
     database: dynamo,
     spaceshipStatusValues: spaceshipStatusValues,
+    spaceshipValueUpdateValues: spaceshipValueUpdateValues,
 }
