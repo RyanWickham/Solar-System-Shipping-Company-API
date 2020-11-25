@@ -23,7 +23,7 @@ const changeItemInLocationTable = (item: {[key: string]: any}): {databaseMessage
             locationTable[i].currentAmountOfCapacityUsed = item.operation;//operation will either be +1 or -1
 
             return {
-                databaseMessage: "Location: " + locationTable[i].id + ", " + item.operation + " current amount in used.";
+                databaseMessage: "Location: " + locationTable[i].id + ", " + item.operation + " current amount in used."
             }
         }
     }
