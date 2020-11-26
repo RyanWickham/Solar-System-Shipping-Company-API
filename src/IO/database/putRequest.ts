@@ -2,7 +2,7 @@ import { locationTable, spaceshipTable} from "./tables";
 import io from "../index";
 import { dynamo } from "../db";
 
-export const changeItemInTable = (tableName: string, item: {[key: string]: any}): {databaseMessage: string} => {
+export const changeItemInTable = (tableName: string, item: {[key: string]: any}): {databaseMessage: string, transactionSuccessful: boolean} => {
     switch(tableName){
         case io.database.tableNames.locations:
             return changeItemInLocationTable(item);
@@ -10,12 +10,13 @@ export const changeItemInTable = (tableName: string, item: {[key: string]: any})
             return changeItemInSpaceshipTable(item);
         default:
             return {
-                databaseMessage: "Error: table was not found, item was not added."
+                databaseMessage: "Error: table was not found, item was not added.",
+                transactionSuccessful: false,
             }
     }
 }
 
-const changeItemInLocationTable = (item: {[key: string]: any}): {databaseMessage: string} => {
+const changeItemInLocationTable = (item: {[key: string]: any}): {databaseMessage: string, transactionSuccessful: boolean} => {
     //check if item exists
     for(let i=0; i<locationTable.length; i++){
         if(locationTable[i].id == item.id){
@@ -30,17 +31,19 @@ const changeItemInLocationTable = (item: {[key: string]: any}): {databaseMessage
 
             return {
                 databaseMessage: "Location: " + locationTable[i].id + ", " + item.operation + " current amount in used. (" + locationTable[i].currentAmountOfCapacityUsed + ")",
+                transactionSuccessful: true,
             }
         }
     }
 
     //item was not found
     return {
-        databaseMessage: "Item was not found."
+        databaseMessage: "Item was not found.",
+        transactionSuccessful: false,
     }
 }
 
-const changeItemInSpaceshipTable = (item: {[key: string]: string}): {databaseMessage: string} => {
+const changeItemInSpaceshipTable = (item: {[key: string]: string}): {databaseMessage: string, transactionSuccessful: boolean} => {
     //check if item exists
     for(let i=0; i<spaceshipTable.length; i++){
         if(spaceshipTable[i].id == item.id){
@@ -52,6 +55,7 @@ const changeItemInSpaceshipTable = (item: {[key: string]: string}): {databaseMes
 
                 return {
                     databaseMessage: "Status of: " + spaceshipTable[i].id + ", was changed from " + oldStatus + " to " + spaceshipTable[i].status + ".",
+                    transactionSuccessful: true,
                 }
 
             }else if(item.type == io.spaceshipValueUpdateValues.locationID){
@@ -60,6 +64,7 @@ const changeItemInSpaceshipTable = (item: {[key: string]: string}): {databaseMes
 
                 return {
                     databaseMessage: "LocationID of: " + spaceshipTable[i].id + ", was changed from " + oldlocation + " to " + spaceshipTable[i].locationID + ".",
+                    transactionSuccessful: true,
                 }
             }
             
@@ -68,6 +73,7 @@ const changeItemInSpaceshipTable = (item: {[key: string]: string}): {databaseMes
 
     //item was not found
     return {
-        databaseMessage: "Item was not found."
+        databaseMessage: "Item was not found.",
+        transactionSuccessful: false
     }
 }
