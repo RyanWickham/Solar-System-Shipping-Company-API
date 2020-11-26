@@ -37,8 +37,9 @@ export const spaceshipTravelToService = async (io: {[key: string]: any}, data: {
     if(locationGetResponse.item == null){
         //no location at this ID
         return {
-            message: "Location with destination location ID: " + data.distinationID + ", does not exists -> can not travel.",
+            message: "Destination with location ID: " + data.distinationID + ", does not exists -> can not travel.",
             response: {
+                spaceshipGetResult: spaceshipGetResult,
                 locationGetResponse: locationGetResponse,
             }
         }

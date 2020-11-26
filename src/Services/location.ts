@@ -2,37 +2,53 @@ export const addLocationService = async (io: {[key: string]: any},
         data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
 
     //create record to add/send to database
-    const result = await io.database.post({
+    const locationPostResponse = await io.database.post({
         tableName: io.database.tableNames.locations,
         item: data
     });
 
+    //check if item alread exists
+    if(locationPostResponse.itemAlreadyAdded){
+        return {
+            message: "Location Added: ID: " + data.id + ", already exists.",
+            response: {
+                locationPostResponse: locationPostResponse,
+            }
+        }
+    }
+
     return {
         message: "Location Added: ID: " + data.id + ", city name: " + data.cityName + ", planet name: " + data.planetName
             + ", total capacity: " + data.totalAvailableCapacity + ", curent amount of space used: " + data.currentAmountOfCapacityUsed,
-        response: result,
+        response: {
+            locationPostResponse: locationPostResponse,
+        }
     }
 }
 
 export const deleteLocationService = async (io: {[key: string]: any}, data: {id: string}) => {
     //check if there are any spaceships at this location
-    const locationIDResponse = await io.database.get({
+    const locationGetResponse = await io.database.get({
         tableName: io.database.tableNames.locations,
         item: data
     });
 
-    if(locationIDResponse.item == null){
+    if(locationGetResponse.item == null){
         return {
             message: "Location with ID: " + data.id + ", does not exists.",
-            response: locationIDResponse,
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
         }
     }
 
     //check if there is currently any spaceships at this locaiton
-    if(locationIDResponse.item.currentAmountOfCapacityUsed > 0){
+    if(locationGetResponse.item.currentAmountOfCapacityUsed > 0){
         return {
             message: "Location with ID: " + data.id + ", currently has spaceships being stored -> can not be deleted.",
-            response: locationIDResponse,
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
         }
     }
 
@@ -44,7 +60,10 @@ export const deleteLocationService = async (io: {[key: string]: any}, data: {id:
     
     return {
         message: "Location with ID: " + data.id + ", was sent to be deleted.",
-        response: locationDeleteResponse,
+        response: {
+            locationGetResponse: locationGetResponse,
+            locationDeleteResponse: locationDeleteResponse,
+        }
     }
 }
 

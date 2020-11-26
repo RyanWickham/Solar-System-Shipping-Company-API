@@ -20,7 +20,7 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
         cityName: locationData.cityName,
         planetName: locationData.planetName,
         totalAvailableCapacity: locationData.totalAvailableCapacity,
-        currentAmountOfCapacityUsed: locationData.currentAmountOfCapacityUsed
+        currentAmountOfCapacityUsed: 0//should not add a location with spaceship already there
     }
 
     //sends the location off to be be delt with -> returns an a message to be sent to the client
@@ -42,21 +42,6 @@ const errorChecking = (locationData: {[key: string]: any}): {statusCode: number,
 
     if(typeof locationData.totalAvailableCapacity != 'number'){
         return io.handler.returnError400(io.IOErrorMessages.paramaterHasWrongTypeMessage);
-    }
-
-    //currentAmountOfCapacityUsed is optional and need extra checks
-    if(!locationData.currentAmountOfCapacityUsed){
-        locationData.currentAmountOfCapacityUsed = 0;
-
-    }else if(typeof locationData.currentAmountOfCapacityUsed != 'number'){//check it is a number
-        return io.handler.returnError400(io.IOErrorMessages.paramaterHasWrongTypeMessage);
-
-    }
-    
-    //check the capacity limit is correct
-    if(locationData.currentAmountOfCapacityUsed > locationData.totalAvailableCapacity){
-        //more items are in location than the capacity is allowed
-        return io.handler.returnError400(io.IOErrorMessages.invalidLocationCapacityMessage);
     }
 
     return io.handler.returnSuccess('');//use as a dummy response to signify no errors
