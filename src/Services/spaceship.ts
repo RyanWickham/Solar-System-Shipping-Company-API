@@ -10,7 +10,15 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
     if(locationIDResponse.item == null){
         //invalid locationID
         return {
-            message: "Invalid locationID: locationID is not linked to any location.",
+            message: "Invalid locationID: " + data.locationID + ", is not linked to any location.",
+        }
+    
+    //check if the location can handle storing another spaceship
+    }else if(locationIDResponse.item.currentAmountOfCapacityUsed >= locationIDResponse.item.totalAvailableCapacity){
+        //no room for a spaceship to be added
+        return {
+            message: "Location: " + data.locationID + ", current capacity is fully, this spaceship can not be added.",
+            locationIDResponse: locationIDResponse,
         }
     }
 
