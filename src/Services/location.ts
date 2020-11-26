@@ -36,7 +36,9 @@ export const deleteLocationService = async (io: {[key: string]: any}, data: {id:
     if(locationGetResponse.item == null){
         return {
             message: "Location with ID: " + data.id + ", does not exists.",
-            locationGetResponse: locationGetResponse,
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
         }
     }
 
@@ -44,7 +46,9 @@ export const deleteLocationService = async (io: {[key: string]: any}, data: {id:
     if(locationGetResponse.item.currentAmountOfCapacityUsed > 0){
         return {
             message: "Location with ID: " + data.id + ", currently has spaceships being stored -> can not be deleted.",
-            locationGetResponse: locationGetResponse,
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
         }
     }
 

@@ -11,7 +11,9 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
         //invalid locationID
         return {
             message: "Invalid locationID: " + data.locationID + ", is not linked to any location.",
-            locationGetResponse: locationGetResponse
+            response: {
+                locationGetResponse: locationGetResponse
+            }
         }
     
     //check if the location can handle storing another spaceship
@@ -19,7 +21,9 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
         //no room for a spaceship to be added
         return {
             message: "Location: " + data.locationID + ", current capacity is fully, this spaceship can not be added.",
-            locationGetResponse: locationGetResponse,
+            response: {
+                locationGetResponse: locationGetResponse
+            }
         }
     }
 
@@ -43,7 +47,7 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
         //need a return here to include the locationIncreaseCapacityResponse
         return {
             message: "Spaceship added: ID: " + data.id + ", name: " + data.name + ", model: " + data.model
-            + ", Location ID " + data.locationID + ", status: " + data.status,
+            + ", Location ID: " + data.locationID + ", status: " + data.status,
             response: {
                 locationGetResponse: locationGetResponse,
                 spaceshipAddingResponse: spaceshipAddingResult,
