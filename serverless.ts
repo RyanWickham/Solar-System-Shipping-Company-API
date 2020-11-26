@@ -36,7 +36,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: 'post',
-            path: 'location',
+            path: 'locations/{locationID}',
           }
         }
       ]
@@ -47,7 +47,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: 'delete',
-            path: 'location',
+            path: 'locations/{locationID}',
           }
         }
       ]
@@ -58,7 +58,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: 'get',
-            path: 'location/help',
+            path: 'locations/help',
           }
         }
       ]
@@ -69,7 +69,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: 'post',
-            path: 'spaceship',
+            path: 'spaceships/{spaceshipID}',
           }
         }
       ]
@@ -80,7 +80,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: 'put',
-            path: 'spaceship/status',
+            path: 'spaceships/status/{spaceshipID}',
           }
         }
       ]
@@ -91,7 +91,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: 'delete',
-            path: 'spaceship',
+            path: 'spaceships/{spaceshipID}',
           }
         }
       ]
@@ -102,7 +102,7 @@ const serverlessConfiguration: Serverless = {
         {
           http: {
             method: 'get',
-            path: 'spaceship/help',
+            path: 'spaceships/help',
           }
         }
       ]
