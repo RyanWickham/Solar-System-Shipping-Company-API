@@ -10,19 +10,21 @@ This project uses:
 - Serverless
 
 ## Endpoints
-HTTP Method | Path | Description | Required JSON
-------------|------|-------------|---------------
-post | /location | Adds a location | {id: string, cityName: string, planetName: string, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}
-delete | /loation | Removes a location | {id: string}
-get | /location/help | Displays information about locatin APIs | NULL
-post | /spaceship | Adds a spaceship | {id: string, name: string, model: string, locationID: string, status: string}
-put | /spaceship/status | Updates a spaceship's status | {id: string, newStatus: string}
-delete | /spaceship | Removes a spaceship | {id: string}
-get | /spaceship/help | Displays information about spaceship's APIs | NULL
-put | /travel | Updates infomation for a spaceship to travel to new destination| {spaceshipID: string, distinationID: string}
-get | /travel/help | Displays information about travel's APIs | NULL
+
+| HTTP Method | Path                             | Description                                                     | Required JSON                                                                                                           |
+| ----------- | -------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| post        | /locations/{locationID}          | Adds a location                                                 | {id: string, cityName: string, planetName: string, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number} |
+| delete      | /loations/{locationID}           | Removes a location                                              | {id: string}                                                                                                            |
+| get         | /locations/help                  | Displays information about locatin APIs                         | NULL                                                                                                                    |
+| post        | /spaceships/{spaceshipID}        | Adds a spaceship                                                | {id: string, name: string, model: string, locationID: string, status: string}                                           |
+| put         | /spaceships/status/{spaceshipID} | Updates a spaceship's status                                    | {id: string, newStatus: string}                                                                                         |
+| delete      | /spaceships/{spaceshipID}        | Removes a spaceship                                             | {id: string}                                                                                                            |
+| get         | /spaceships/help                 | Displays information about spaceship's APIs                     | NULL                                                                                                                    |
+| put         | /travel                          | Updates infomation for a spaceship to travel to new destination | {spaceshipID: string, distinationID: string}                                                                            |
+| get         | /travel/help                     | Displays information about travel's APIs                        | NULL                                                                                                                    |
 
 ## Backlog
+
 - [x] API Endpoints
   - [x] Add spaceship endpoint
   - [x] Add location endpoint
@@ -30,17 +32,18 @@ get | /travel/help | Displays information about travel's APIs | NULL
   - [x] Remove Spaceship endpoint
   - [x] Remove location endpoint
   - [x] travel functionality endpoint
-- [ ] Services
-  - [ ] Add spaceship service functionalty
-  - [ ] Add location service functionalty
-  - [ ] Update Spaceship service functionalty
-  - [ ] Remove Spaceship service functionalty
-  - [ ] Remove location service functionalty
-  - [ ] travel functionality service functionalty
+- [x] Services
+  - [x] Add spaceship service functionalty
+  - [x] Add location service functionalty
+  - [x] Update Spaceship service functionalty
+  - [x] Remove Spaceship service functionalty
+  - [x] Remove location service functionalty
+  - [x] travel functionality service functionalty
 - [ ] Database
-  - [ ] Create adding spaceship link
-  - [ ] Create adding location link
-  - [ ] Create updating spaceship link
-  - [ ] Create removing spaceship link
-  - [ ] Create removing spaceship link
-  - [ ] Create travel functionaly link
+  - [x] Create adding spaceship link
+  - [x] Create adding location link
+  - [x] Create updating spaceship link
+  - [x] Create removing spaceship link
+  - [x] Create removing spaceship link
+  - [x] Create travel functionaly link
+  - [ ] Set up an actual database
