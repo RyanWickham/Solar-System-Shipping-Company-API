@@ -20,7 +20,7 @@ export let locationTable: Location[] = [
         cityName: "Sydney",
         planetName: "Earth",
         totalAvailableCapacity: 500,
-        currentAmountOfCapacityUsed: 2
+        currentAmountOfCapacityUsed: 3
     },
     {
         id: "addSpaceshipTest4",
@@ -41,6 +41,13 @@ export let spaceshipTable: Spaceship[] = [
     },
     {
         id:"addTest2",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"OPERATIONAL"
+    },
+    {
+        id:"removeSpaceshipTest1",
         name:"ssApple",
         model:"ssmodel",
         locationID:"ES",

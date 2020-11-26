@@ -120,7 +120,7 @@ export const deleteSpaceshipService = async (io: {[key: string]: any}, data: {id
 
     //if item was deleted -> decreas location capacity
     if(spaceshipDeleteResult.itemWasDeleted){
-        //Update capacity of location to +1
+        //Update capacity of location to -1
         const locationIncreaseCapacityResponse = await io.database.put({
             tableName: io.database.tableNames.locations,
             item: {
