@@ -127,7 +127,7 @@ export const spaceshipHelpService = () => {
     return {
         message: "Spaceship Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /spaceship.",
         addSpaceship: {
-            path: '/spaceship',
+            path: '/spaceships/{spaceshipID}',
             HTTPStatusCode: 'post',
             requiredJSON: {
                 id: 'required string',
@@ -138,7 +138,7 @@ export const spaceshipHelpService = () => {
             },
         },
         updateStatus: {
-            path: '/spaceship/status',
+            path: '/spaceship/statuss/{spaceshipID}',
             HTTPStatusCode: 'put',
             requiredJSON: {
                 id: 'required string',
@@ -146,7 +146,7 @@ export const spaceshipHelpService = () => {
             },
         },
         deleteSpaceship: {
-            path: '/spaceship',
+            path: '/spaceships/{spaceshipID}',
             HTTPStatusCode: 'delete',
             requiredJSON: {
                 id: 'required string -> id of spaceship to be deleted'

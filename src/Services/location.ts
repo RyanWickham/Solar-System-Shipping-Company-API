@@ -52,7 +52,7 @@ export const locationHelpService = () => {
     return {
         message: "Location Help: The following obejects are the parmaters of what is required to submit the corrasponding HTTP requests on /location.",
         addLocation: {
-            path: '/location',
+            path: '/locations/{locationID}',
             HTTPStatusCode: 'post',
             requiredJSON:  {
                 id: 'required string',
@@ -63,7 +63,7 @@ export const locationHelpService = () => {
             },
         },
         removeLocation: {
-            path: '/location',
+            path: '/locations/{locationID}',
             HTTPStatusCode: 'delete',
             requiredJSON: {
                 id: 'required string -> id of location to be deleted'
