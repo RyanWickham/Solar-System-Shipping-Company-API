@@ -1,6 +1,87 @@
-export const spaceshipTravelToService = (io: {[key: string]: any}, data: {spaceshipID: string, distinationID: string}) => {
+export const spaceshipTravelToService = async (io: {[key: string]: any}, data: {spaceshipID: string, distinationID: string}) => {
+    //get the spaceship's status to check if it is operational
+    const spaceshipGetResult = await io.database.get({
+        tableName: io.database.tableNames.spaceships,
+        item: {id: data.spaceshipID}
+    });
+
+    //check if spaceship exists
+    if(spaceshipGetResult.item == null){
+        //no iteam was found
+        return {
+            message: "Spaceship with ID: " + data.spaceshipID + ", was not found.",
+            response: {
+                spaceshipGetResponse: spaceshipGetResult,
+            }
+        }
+    }
+
+    //spaceship exists
+    //spaceships can only change location if their status == operational
+    if(spaceshipGetResult.item.status != io.spaceshipStatusValues.operational){
+        return {
+            message: "Spaceship with ID: " + data.spaceshipID + ", status is not operational -> can not travel.",
+            response: {
+                spaceshipGetResponse: spaceshipGetResult,
+            }
+        }
+    }
+
+    // get the destination location and determine if it has the capacity for a new spaceship
+    const locationGetResponse = await io.database.get({
+        tableName: io.database.tableNames.locations,
+        item: {id: data.distinationID}
+    });
+
+    //perform a check if destination location is valid
+    if(locationGetResponse.item == null){
+        //no location at this ID
+        return {
+            message: "Location with destination location ID: " + data.distinationID + ", does not exists -> can not travel.",
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
+        }
+    }
+    //current location is validated when spaceship was added -> no need to worry
+
+    //change ship location
+    const shipChangeLocationResponse = await io.database.put({
+        tableName: io.database.tableNames.spaceships,
+        item: {
+            id: data.spaceshipID,
+            type: io.spaceshipValueUpdateValues.locationID,
+            value: data.distinationID,
+        },
+    });
+
+    //old location current capacity -1
+    const oldLocationIncreaseCapacityResponse = await io.database.put({
+        tableName: io.database.tableNames.locations,
+        item: {
+            id: spaceshipGetResult.item.locationID,
+            operation: io.database.capacityOperations.decrease,
+        },
+    });
+
+    //new location current capacity +1
+    const newLocationIncreaseCapacityResponse = await io.database.put({
+        tableName: io.database.tableNames.locations,
+        item: {
+            id: data.distinationID,
+            operation: io.database.capacityOperations.increase,
+        },
+    });
+
     return {
-        message: "Spaceship ID: " + data.spaceshipID + ", traveling to location ID: " + data.distinationID + "."
+        message: "Spaceship ID: " + data.spaceshipID + ", traveling to location ID: " + data.distinationID + ".",
+        response: {
+            spaceshipGetResult: spaceshipGetResult,
+            locationGetResponse: locationGetResponse,
+            shipChangeLocationResponse: shipChangeLocationResponse,
+            oldLocationIncreaseCapacityResponse: oldLocationIncreaseCapacityResponse,
+            newLocationIncreaseCapacityResponse: newLocationIncreaseCapacityResponse,
+        }
     }
 }
 

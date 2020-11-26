@@ -21,7 +21,7 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
     }
 
     //sends the location off to be be delt with -> returns an a message to be sent to the client
-    const result = service.updateSpaceshipStatus(io, spaceshipToUpdate);
+    const result = await service.updateSpaceshipStatus(io, spaceshipToUpdate);
     return io.handler.returnSuccess(result);
 }
 
@@ -36,8 +36,8 @@ const errorChecking = (spaceshipData: {[key: string]: any}): {statusCode: number
     io.handler.stringErrorChecking(spaceshipData.newStatus);
 
     //Make sure that newStatus is only of type [DECOMMISSIONED | MAINTENANCE | OPERATIONAL]
-    if(spaceshipData.newStatus != 'DECOMMISSIONED' && spaceshipData.newStatus != 'MAINTENANCE' && 
-        spaceshipData.newStatus != 'OPERATIONAL'){
+    if(spaceshipData.newStatus != io.spaceshipStatusValues.decommissioned && spaceshipData.newStatus != io.spaceshipStatusValues.maintenance && 
+        spaceshipData.newStatus != io.spaceshipStatusValues.operational){
 
         return io.handler.returnError400(io.IOErrorMessages.spaceshipStatusInvalidValue);
     }

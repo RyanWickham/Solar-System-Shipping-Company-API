@@ -1,3 +1,8 @@
+import { addToTable } from "./database/postRequests";
+import { getFromTable } from "./database/getRequests";
+import { deleteFromTable } from "./database/deleteRequest";
+import { changeItemInTable } from "./database/putRequest";
+
 const aws = require('aws-sdk');
 const db = new aws.DynamoDB.DocumentClient({
     region: 'ap-southeast-2',
@@ -9,29 +14,46 @@ const tableNames = {
     spaceships: "Spaceship",
 }
 
-export const dynamo = {
-    put: async (data) => {
-        // const params = {
-        //     TableName: data.tableName,
-        //     Item: data.item
-        // }
+const capacityOperations = {
+    increase: "INCREASE",
+    decrease: "DECREASE",
+}
 
-        // const result = await db.put(params).promise();
+export const dynamo = {
+    tableNames: tableNames,
+    capacityOperations: capacityOperations,
+
+    post: async (data: {tableName: string, item: {[key: string]: any}}) => {
+        //formate needed for DynamoDB
+        const params = {
+            TableName: data.tableName,
+            Item: data.item
+        }
+
+        // const result = await db.post(params).promise();
         // return result;
 
-        return "DATABASE -> ADDING THING";
+        return addToTable(params.TableName, params.Item);
     },
 
-    get: async (data) => {
-        // const params = {
-        //     TableName: data.tableName,
-        //     Key: data.keys
-        // }
+    get: async (data: {tableName: string, item: {[key: string]: any}}) => {
+        //formate needed for DynamoDB
+        const params = {
+            TableName: data.tableName,
+            Key: data.item
+        }
 
         // const result = await db.get(params).promise();
         // return result.Item;
-        return "DATABASE -> GOT THING";
+
+        return getFromTable(params.TableName, params.Key);
     },
 
-    tableNames: tableNames,
+    delete: async (data: {tableName: string, item: {[key: string]: any}}) => {
+        return deleteFromTable(data.tableName, data.item);
+    },
+
+    put: async (data: {tableName: string, item: {[key: string]: any}}) => {
+        return changeItemInTable(data.tableName, data.item);
+    },
 }
