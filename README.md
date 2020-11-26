@@ -47,3 +47,10 @@ This project uses:
   - [x] Create removing spaceship link
   - [x] Create travel functionaly link
   - [ ] Set up an actual database
+- [ ] Testing
+  - [x] Add spaceship
+  - [ ] Add location
+  - [ ] Update Spaceship
+  - [ ] Remove Spaceship
+  - [ ] Remove location
+  - [ ] travel functionality
