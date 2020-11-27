@@ -68,6 +68,22 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
 }
 
 export const updateSpaceshipStatusService = async (io: {[key: string]: any}, data: {id: string, newStatus: string}) => {
+    //Check if the spaceships exits
+    const spaceshipGetResult = await io.database.get({
+        tableName: io.database.tableNames.spaceships,
+        item: {id: data.id}
+    });
+
+    if(spaceshipGetResult.item == null){
+        //does not exists
+        return {
+            message: "Spaceship with ID: " + data.id + ", was not found -> could not update statis.",
+            response: {
+                spaceshipGetResult: spaceshipGetResult,
+            }
+        }
+    }
+
     //error checking was already on on newStatus -> it is only a vaild status value
     const spaceshipUpdateStatusResponse = await io.database.put({
         tableName: io.database.tableNames.spaceships,
@@ -82,6 +98,7 @@ export const updateSpaceshipStatusService = async (io: {[key: string]: any}, dat
         return {
             message: "Erorr occured, spaceship with ID: " + data.id + ", could not have it's status changed to: " + data.newStatus + ".",
             response: {
+                spaceshipGetResult: spaceshipGetResult,
                 spaceshipUpdateStatusResponse: spaceshipUpdateStatusResponse,
             }
         }
@@ -90,6 +107,7 @@ export const updateSpaceshipStatusService = async (io: {[key: string]: any}, dat
     return {
         message: "Spaceship with ID: " + data.id + ", was sent to have it's status changed to: " + data.newStatus + ".",
         response: {
+            spaceshipGetResult: spaceshipGetResult,
             spaceshipUpdateStatusResponse: spaceshipUpdateStatusResponse,
         }
     }
@@ -120,7 +138,7 @@ export const deleteSpaceshipService = async (io: {[key: string]: any}, data: {id
 
     //if item was deleted -> decreas location capacity
     if(spaceshipDeleteResult.itemWasDeleted){
-        //Update capacity of location to +1
+        //Update capacity of location to -1
         const locationIncreaseCapacityResponse = await io.database.put({
             tableName: io.database.tableNames.locations,
             item: {

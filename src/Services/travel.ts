@@ -39,12 +39,24 @@ export const spaceshipTravelToService = async (io: {[key: string]: any}, data: {
         return {
             message: "Destination with location ID: " + data.distinationID + ", does not exists -> can not travel.",
             response: {
-                spaceshipGetResult: spaceshipGetResult,
+                spaceshipGetResponse: spaceshipGetResult,
                 locationGetResponse: locationGetResponse,
             }
         }
     }
     //current location is validated when spaceship was added -> no need to worry
+
+    //Check if distination has capacity for another spaceship
+    if(locationGetResponse.item.currentAmountOfCapacityUsed >= locationGetResponse.item.totalAvailableCapacity){
+        //not enough space for a new spaceship
+        return {
+            message: "Destination with location ID: " + data.distinationID + ", does not have enough capacity for another spaceship.",
+            response: {
+                spaceshipGetResponse: spaceshipGetResult,
+                locationGetResponse: locationGetResponse,
+            }
+        }
+    }
 
     //change ship location
     const shipChangeLocationResponse = await io.database.put({
@@ -77,7 +89,7 @@ export const spaceshipTravelToService = async (io: {[key: string]: any}, data: {
     return {
         message: "Spaceship ID: " + data.spaceshipID + ", traveling to location ID: " + data.distinationID + ".",
         response: {
-            spaceshipGetResult: spaceshipGetResult,
+            spaceshipGetResponse: spaceshipGetResult,
             locationGetResponse: locationGetResponse,
             shipChangeLocationResponse: shipChangeLocationResponse,
             oldLocationIncreaseCapacityResponse: oldLocationIncreaseCapacityResponse,
