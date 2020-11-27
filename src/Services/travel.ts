@@ -39,7 +39,7 @@ export const spaceshipTravelToService = async (io: {[key: string]: any}, data: {
         return {
             message: "Destination with location ID: " + data.distinationID + ", does not exists -> can not travel.",
             response: {
-                spaceshipGetResult: spaceshipGetResult,
+                spaceshipGetResponse: spaceshipGetResult,
                 locationGetResponse: locationGetResponse,
             }
         }
@@ -52,7 +52,7 @@ export const spaceshipTravelToService = async (io: {[key: string]: any}, data: {
         return {
             message: "Destination with location ID: " + data.distinationID + ", does not have enough capacity for another spaceship.",
             response: {
-                spaceshipGetResult: spaceshipGetResult,
+                spaceshipGetResponse: spaceshipGetResult,
                 locationGetResponse: locationGetResponse,
             }
         }
@@ -89,7 +89,7 @@ export const spaceshipTravelToService = async (io: {[key: string]: any}, data: {
     return {
         message: "Spaceship ID: " + data.spaceshipID + ", traveling to location ID: " + data.distinationID + ".",
         response: {
-            spaceshipGetResult: spaceshipGetResult,
+            spaceshipGetResponse: spaceshipGetResult,
             locationGetResponse: locationGetResponse,
             shipChangeLocationResponse: shipChangeLocationResponse,
             oldLocationIncreaseCapacityResponse: oldLocationIncreaseCapacityResponse,
