@@ -23,6 +23,10 @@ This project uses:
 | put         | /travel                          | Updates infomation for a spaceship to travel to new destination | {spaceshipID: string, distinationID: string}                                                                            |
 | get         | /travel/help                     | Displays information about travel's APIs                        | NULL                                                                                                                    |
 
+Note: Remove function will only work 1 time when being tested and can't be done again unless the function is deployed again.
+This has to do with how the dummy database is set up. It acks like each function have its own database and they don't interact with each other.
+
+
 ## Backlog
 
 - [x] API Endpoints
