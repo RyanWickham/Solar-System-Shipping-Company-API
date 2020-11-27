@@ -36,6 +36,20 @@ export let locationTable: Location[] = [
         totalAvailableCapacity: 400,
         currentAmountOfCapacityUsed: 0
     },
+    {
+        id: "deleteLocationTest1",
+        cityName: "testCity",
+        planetName: "testPlanet",
+        totalAvailableCapacity: 400,
+        currentAmountOfCapacityUsed: 200
+    },
+    {
+        id: "deleteLocationTest3",
+        cityName: "testCity",
+        planetName: "testPlanet",
+        totalAvailableCapacity: 400,
+        currentAmountOfCapacityUsed: 200
+    },
 ];
 
 export let spaceshipTable: Spaceship[] = [

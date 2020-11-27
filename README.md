@@ -52,5 +52,5 @@ This project uses:
   - [x] Add location
   - [x] Update Spaceship
   - [x] Remove Spaceship
-  - [ ] Remove location
+  - [x] Remove location
   - [ ] travel functionality
