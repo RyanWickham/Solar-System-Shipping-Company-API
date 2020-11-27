@@ -50,7 +50,7 @@ This project uses:
 - [ ] Testing
   - [x] Add spaceship
   - [ ] Add location
-  - [ ] Update Spaceship
+  - [x] Update Spaceship
   - [x] Remove Spaceship
   - [ ] Remove location
   - [ ] travel functionality
