@@ -53,6 +53,76 @@ export let spaceshipTable: Spaceship[] = [
         locationID:"ES",
         status:"OPERATIONAL"
     },
+    {
+        id:"updateStatusTest1",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"OPERATIONAL"
+    },
+    {
+        id:"updateStatusTest2",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"OPERATIONAL"
+    },
+    {
+        id:"updateStatusTest3",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"OPERATIONAL"
+    },
+    {
+        id:"updateStatusTest4",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"OPERATIONAL"
+    },
+    {
+        id:"updateStatusTest5",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"MAINTENANCE"
+    },
+    {
+        id:"updateStatusTest6",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"MAINTENANCE"
+    },
+    {
+        id:"updateStatusTest7",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"MAINTENANCE"
+    },
+    {
+        id:"updateStatusTest8",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"DECOMMISSIONED"
+    },
+    {
+        id:"updateStatusTest9",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"DECOMMISSIONED"
+    },
+    {
+        id:"updateStatusTest10",
+        name:"ssApple",
+        model:"ssmodel",
+        locationID:"ES",
+        status:"DECOMMISSIONED"
+    },
 ]
 
 export const reconstructLocationTable = (newTable) => {
