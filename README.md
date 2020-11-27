@@ -49,7 +49,7 @@ This project uses:
   - [ ] Set up an actual database
 - [ ] Testing
   - [x] Add spaceship
-  - [ ] Add location
+  - [x] Add location
   - [x] Update Spaceship
   - [x] Remove Spaceship
   - [ ] Remove location
