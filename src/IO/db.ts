@@ -1,12 +1,13 @@
-import { addToTable } from "./database/postRequests";
-import { getFromTable } from "./database/getRequests";
-import { deleteFromTable } from "./database/deleteRequest";
-import { changeItemInTable } from "./database/putRequest";
+ import { addToTable } from "./database/postRequests";
+ import { getFromTable } from "./database/getRequests";
+ import { deleteFromTable } from "./database/deleteRequest";
+ import { changeItemInTable } from "./database/putRequest";
 
 const aws = require('aws-sdk');
 const db = new aws.DynamoDB.DocumentClient({
     region: 'ap-southeast-2',
-})
+});
+
 
 //A lit of the tables within the database so make sure to avoid error from type / easy of update
 const tableNames = {
@@ -24,13 +25,27 @@ export const dynamo = {
     capacityOperations: capacityOperations,
 
     post: async (data: {tableName: string, item: {[key: string]: any}}) => {
+        console.log('in post');
         //formate needed for DynamoDB
         const params = {
             TableName: data.tableName,
             Item: data.item
         }
+        // console.log('before database');
 
-        // const result = await db.post(params).promise();
+        // try{
+        //     const result = await db.put(params).promise();
+        //     console.log('success', result);
+        //     return result;
+        // } catch(err){
+        //     console.log('MY ERROR', err);
+        //     return {
+        //         message: "my error occured",
+        //         err: err
+        //     }
+        // }
+        
+        // console.log('results!!!!', result);
         // return result;
 
         return addToTable(params.TableName, params.Item);
