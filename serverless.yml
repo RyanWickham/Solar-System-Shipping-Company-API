@@ -188,3 +188,27 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+resources:
+  Resources:
+    spaceshipTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Spaceship-Table
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    LocationTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Location-Table
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST

@@ -11,8 +11,8 @@ const db = new aws.DynamoDB.DocumentClient({
 
 //A lit of the tables within the database so make sure to avoid error from type / easy of update
 const tableNames = {
-    locations: "Location",
-    spaceships: "Spaceship",
+    locations: "Location-Table",
+    spaceships: "Spaceship-Table",
 }
 
 const capacityOperations = {
@@ -31,24 +31,23 @@ export const dynamo = {
             TableName: data.tableName,
             Item: data.item
         }
-        // console.log('before database');
 
-        // try{
-        //     const result = await db.put(params).promise();
-        //     console.log('success', result);
-        //     return result;
-        // } catch(err){
-        //     console.log('MY ERROR', err);
-        //     return {
-        //         message: "my error occured",
-        //         err: err
-        //     }
-        // }
+        try{
+            const result = await db.put(params).promise();
+            console.log('success', result);
+            return {message: 'database trascation successful', results: result};
+        } catch(err){
+            console.log('MY ERROR', err);
+            return {
+                message: "my error occured",
+                err: err
+            }
+        }
         
         // console.log('results!!!!', result);
         // return result;
 
-        return addToTable(params.TableName, params.Item);
+        // return addToTable(params.TableName, params.Item);
     },
 
     get: async (data: {tableName: string, item: {[key: string]: any}}) => {
