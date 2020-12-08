@@ -1,7 +1,3 @@
- import { addToTable } from "./database/postRequests";
- import { getFromTable } from "./database/getRequests";
- import { deleteFromTable } from "./database/deleteRequest";
- import { changeItemInTable } from "./database/putRequest";
 
 const aws = require('aws-sdk');
 const db = new aws.DynamoDB.DocumentClient({
@@ -24,50 +20,85 @@ export const dynamo = {
     tableNames: tableNames,
     capacityOperations: capacityOperations,
 
-    post: async (data: {tableName: string, item: {[key: string]: any}}) => {
-        console.log('in post');
+    post: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, itemAlreadyAdded: boolean}> => {
         //formate needed for DynamoDB
         const params = {
             TableName: data.tableName,
-            Item: data.item
+            Item: data.item,
+            ReturnValues: "ALL_OLD"//return values if an something was changed else return empty {}
         }
 
         try{
-            const result = await db.put(params).promise();
-            console.log('success', result);
-            return {message: 'database trascation successful', results: result};
+            const result = await db.put(params).promise();//result should equal an empty {} if this id isnt used
+
+            //check if an item was already there => if attribute key exists, an item was overridden
+            if(!result.Attributes){
+                return {
+                    databaseMessage: result,
+                    itemAlreadyAdded: false
+                };
+
+            }else{//item already exists
+                return {
+                    databaseMessage: result,
+                    itemAlreadyAdded: true
+                };
+            }
+
         } catch(err){
-            console.log('MY ERROR', err);
             return {
-                message: "my error occured",
-                err: err
+                databaseMessage: err,
+                itemAlreadyAdded: true
             }
         }
-        
-        // console.log('results!!!!', result);
-        // return result;
-
-        // return addToTable(params.TableName, params.Item);
     },
 
-    get: async (data: {tableName: string, item: {[key: string]: any}}) => {
+    get: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, item: {} }> => {
         //formate needed for DynamoDB
         const params = {
             TableName: data.tableName,
-            Key: data.item
+            Key: data.item.id, //only primary key
         }
 
+        try{
+            const result = await db.get(params).promise();
+
+            return {
+                databaseMessage: result,
+                item: result.Item
+            }
+
+        }catch(err) {
+            return {
+                databaseMessage: err,
+                item: null
+            }
+        }
         // const result = await db.get(params).promise();
         // return result.Item;
-
-        return getFromTable(params.TableName, params.Key);
     },
 
-    delete: async (data: {tableName: string, item: {[key: string]: any}}) => {
-        return deleteFromTable(data.tableName, data.item);
+    delete: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, itemWasDeleted: boolean}> => {
+        try{
+            const result = await db.get(data).promise();
+
+        }catch(err) {
+            return {
+                databaseMessage: err,
+                itemWasDeleted: false
+            }
+        }
     },
 
-    put: async (data: {tableName: string, item: {[key: string]: any}}) => {
-        return changeItemInTable(data.tableName, data.item);
+    put: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, transactionSuccessful: boolean}> => {
+        try{
+            //const result = changeItemInTable(data.tableName, data.item);
+
+        }catch(err){
+            return {
+                databaseMessage: err,
+                transactionSuccessful: false
+            }
+        }
     },
 }

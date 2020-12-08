@@ -41,6 +41,24 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
 
+  iamRoleStatement:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:QueryItem
+      Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Spaceship-Table"
+
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+        - dynamodb:QueryItem
+      Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Location-Table"
+
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
