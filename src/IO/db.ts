@@ -58,7 +58,7 @@ export const dynamo = {
         //formate needed for DynamoDB
         const params = {
             TableName: data.tableName,
-            Key: data.item, //only primary key
+            Key: {id: data.item.id}, //only primary key
         }
 
         try{
@@ -75,13 +75,29 @@ export const dynamo = {
                 item: null
             }
         }
-        // const result = await db.get(params).promise();
-        // return result.Item;
     },
 
     delete: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, itemWasDeleted: boolean}> => {
+        const params = {
+            TableName: data.tableName,
+            Key: {id: data.item.id},
+            ReturnValues: 'ALL_OLD',
+        }
+
         try{
-            const result = await db.get(data).promise();
+            const result = await db.get(params).promise();
+            
+            if(!result.Attributes){
+                return {
+                    databaseMessage: result,
+                    itemWasDeleted: false
+                }
+            }else {
+                return {
+                    databaseMessage: result,
+                    itemWasDeleted: true
+                }
+            }
 
         }catch(err) {
             return {
