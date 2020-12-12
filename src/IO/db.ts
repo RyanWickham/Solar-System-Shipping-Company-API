@@ -21,146 +21,204 @@ export const dynamo = {
     tableNames: tableNames,
     capacityOperations: capacityOperations,
 
-    post: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, itemAlreadyAdded: boolean}> => {
-        //formate needed for DynamoDB
+    post: async (tableName: string, item: {[key: string]: any}): Promise<{
+        databaseMessage: string, 
+        itemAddedSuccessfuly: boolean, 
+        oldItemWasEdited: boolean, 
+        oldItem: {},
+        errorOccured: boolean,
+    }> => {
+
+        //response results with default values -> assume failure
+        let databaseMessage: string = "";
+        let addedSuccessfuly: boolean = false;
+        let oldItemWasEdited: boolean = true;
+        let oldItem: {} = null;
+        let errorOccured: boolean = true;
+        
+        //format data to be provided to dynamoDB
         const params = {
-            TableName: data.tableName,
-            Item: data.item,
-            ReturnValues: "ALL_OLD"//return values if an something was changed else return empty {}
+            TableName: tableName,
+            Item: item,
+            ReturnValues: "ALL_OLD"//return the item that was changed if something was changed, or {} if nothing was there before
         }
 
-        try{
-            const result = await db.put(params).promise();//result should equal an empty {} if this id isnt used
+        try {
+            const databaseResponse = await db.put(params).promise();
 
-            //check if an item was already there => if attribute key exists, an item was overridden
-            if(!result.Attributes){
-                return {
-                    databaseMessage: result,
-                    itemAlreadyAdded: false
-                };
+            //detect if an item was changed when added
+            if(!databaseResponse.Attributes){
+                //there was no old item
+                databaseMessage = "The item was added successfuly.";
 
-            }else{//item already exists
-                return {
-                    databaseMessage: result,
-                    itemAlreadyAdded: true
-                };
+                addedSuccessfuly = true;
+                oldItemWasEdited = false;
+
+            }else{
+                //an item was already using the primary key -> save old item to be returned
+                //oldItemWasEdited == true so the end user knows this is useable
+                oldItem = databaseResponse.Attributes
+
+                databaseMessage = "There was an item already in table with provided Primary Key.";
             }
 
-        } catch(err){
-            return {
-                databaseMessage: err,
-                itemAlreadyAdded: true
-            }
-        }
-    },
-
-    get: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, item: {} }> => {
-        //formate needed for DynamoDB
-        const params = {
-            TableName: data.tableName,
-            Key: {id: data.item.id}, //only primary key
-        }
-
-        try{
-            const result = await db.get(params).promise();
-
-            return {
-                databaseMessage: result,
-                item: result.Item
-            }
+            errorOccured = false;
 
         }catch(err) {
-            return {
-                databaseMessage: err,
-                item: null
-            }
+            errorOccured = true;
+            databaseMessage = err;
+            oldItemWasEdited = false;//error occured not item should have been found
+        }
+
+        //Return object
+        return {
+            databaseMessage: databaseMessage,
+            itemAddedSuccessfuly: addedSuccessfuly,
+            oldItemWasEdited: oldItemWasEdited,
+            oldItem: oldItem,
+            errorOccured: errorOccured
         }
     },
 
-    delete: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, itemWasDeleted: boolean}> => {
+    get: async (tableName: string, primaryKey: string): Promise<{databaseMessage: string, errorOccured: boolean, item: {} }> => {
+        //response results with default values -> assume failure
+        let databaseMessage: string = "";
+        let errorOccured: boolean = true;
+        let item: {} = null;
+
+        //format data to be provided to dynamoDB
         const params = {
-            TableName: data.tableName,
-            Key: {id: data.item.id},
+            TableName: tableName,
+            Key: {
+                id: primaryKey
+            }
+        }
+
+        try {
+            const databaseResponse = await db.get(params).promise();
+
+            //check if an item was there
+            if(databaseResponse.Item){
+                databaseMessage = "Item was received successfuly.";
+                item = databaseResponse.Item;
+            }else{
+                databaseMessage = "No item was found with the provided Primary Key";
+            }
+            
+            errorOccured = false;
+
+        } catch(err) {
+            databaseMessage = err;
+            errorOccured = true;
+        }
+
+        return {
+            databaseMessage: databaseMessage,
+            errorOccured: errorOccured,
+            item: item
+        }
+    },
+
+    delete: async (tableName: string, primaryKey: string): Promise<{
+        databaseMessage: string, 
+        errorOccured: boolean, 
+        itemWasDeleted: boolean,
+        deletedItem: {} 
+    }> => {
+
+        //response results with default values -> assume failure
+        let databaseMessage: string = "";
+        let errorOccured: boolean = true;
+        let itemWasDeleted: boolean = false;
+        let deletedItem: {} = null;
+
+        //format data to be provided to dynamoDB
+        const params = {
+            TableName: tableName,
+            Key: {
+                id: primaryKey
+            },
             ReturnValues: 'ALL_OLD',
         }
 
-        try{
-            const result = await db.get(params).promise();
-            
-            if(!result.Attributes){
-                return {
-                    databaseMessage: result,
-                    itemWasDeleted: false
-                }
-            }else {
-                return {
-                    databaseMessage: result,
-                    itemWasDeleted: true
-                }
+        try {
+            const databaseResponse = await db.get(params).promise();
+
+            if(!databaseResponse.Attributes){
+                //no item was deleted
+                itemWasDeleted = false;
+                databaseMessage = "No item was found with the provided Primary Key.";
+
+            }else{
+                //An item was deleted
+                databaseMessage = "Item was delete successfuly.";
+                itemWasDeleted = true;
+                deletedItem = databaseResponse.Attributes;
             }
+
 
         }catch(err) {
-            return {
-                databaseMessage: err,
-                itemWasDeleted: false
-            }
+            databaseMessage = err;
+            errorOccured = true;
+            itemWasDeleted = false;
+        }
+
+        return {
+            databaseMessage: databaseMessage,
+            errorOccured: errorOccured,
+            itemWasDeleted: itemWasDeleted,
+            deletedItem: deletedItem
         }
     },
 
-    put: async (data: {tableName: string, item: {[key: string]: any}}): Promise<{databaseMessage: string, transactionSuccessful: boolean}> => {
+    update: async (tableName: string, primaryKey: string, valueToUpdate: string, 
+        expression: '='|'+='|'-=' = '=', updatedValue: string|number): Promise<{
+            databaseMessage: string,
+            errorOccured: boolean,
+            valuesWereUpdated: boolean,
+            oldValues: {},
+        }> => {
         
+        //response results with default values -> assume failure
+        let databaseMessage: string = "";
+        let errorOccured: boolean = true;
+        let valuesWereUpdated: boolean = false;
+        let oldValues: {} = null;
+
+        //format data to be provided to dynamoDB
         let params = {
-            TableName: data.tableName,
-            Key: {id: data.item.id},
-            UpdateExpression: ``,
-            ExpressionAttributeValues: {}
+            TableName: tableName,
+            Key: {
+                id: primaryKey
+            },
+            //expression will be '=' | '+=' | '-=' => default is '='
+            UpdateExpression: `set ${valueToUpdate} ${expression} ${updatedValue}`,
+            ReturnValues: "UPDATE_OLD"
         }
 
-        //two seperate update functions, 1 for location capacity, 1 for spaceship status
-        if(params.TableName == IO.database.tableNames.locations){
-            params.UpdateExpression = `set currentAmountOfCapacityUsed = currentAmountOfCapacityUsed + :amount`;
-            //location will either be +1 or -1 to capacity
-            if(data.item.operation == IO.database.capacityOperations.increase){
-                params.ExpressionAttributeValues = {
-                    ':amount': 1
-                }
+        try {
+            const databaseResponse = await db.update(params).promise();
+
+            if(databaseResponse.Attributes){
+                valuesWereUpdated = true;
+                oldValues = databaseResponse.Attributes;
+
             }else{
-                params.ExpressionAttributeValues = {
-                    ':amount': -1
-                }
+                valuesWereUpdated = false;
             }
-            
 
-        }else if (params.TableName == IO.database.tableNames.spaceships){
-            //spaceship will update the status or locationID
-            if(data.item.type == IO.spaceshipValueUpdateValues.status){
-                params.UpdateExpression = `set status = :newStatus`;
-                params.ExpressionAttributeValues = {
-                    ':newStatus': data.item.value
-                }
+            errorOccured = false;
 
-            }else if(data.item.type == IO.spaceshipValueUpdateValues.locationID){
-                params.UpdateExpression = `set locationID = :newLocationID`;
-                params.ExpressionAttributeValues = {
-                    ':newLocationID': data.item.value
-                }
-            }
-            
+        }catch(err) {
+            databaseMessage = err;
+            errorOccured = true;
         }
 
-        try{
-            const result = await db.update(params).promise();
-
-            return {
-                databaseMessage: result,
-                transactionSuccessful: true
-            }
-
-        }catch(err){
-            return {
-                databaseMessage: err,
-                transactionSuccessful: false
-            }
+        return {
+            databaseMessage: databaseMessage,
+            errorOccured: errorOccured,
+            valuesWereUpdated: valuesWereUpdated,
+            oldValues: oldValues
         }
-    },
+    }
 }
