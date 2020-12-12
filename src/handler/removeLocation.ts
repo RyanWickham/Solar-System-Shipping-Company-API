@@ -31,8 +31,8 @@ const errorChecking = (locationData: {[key: string]: any}): {statusCode: number,
     }
 
     //type gard to ensure that each paramater is of correct type
-    io.handler.stringErrorChecking(locationData.id);
-
+    let result:{statusCode: number, body: string} = io.handler.stringErrorChecking(locationData.id);
+    if(result.statusCode != 200) return result;
 
     return io.handler.returnSuccess('');//use as a dummy response to signify no errors
 }

@@ -36,9 +36,14 @@ const errorChecking = (locationData: {[key: string]: any}): {statusCode: number,
     }
 
     //type gard to ensure that each paramater is of correct type
-    io.handler.stringErrorChecking(locationData.id);
-    io.handler.stringErrorChecking(locationData.cityName);
-    io.handler.stringErrorChecking(locationData.planetName);
+    let result:{statusCode: number, body: string} = io.handler.stringErrorChecking(locationData.id);
+    if(result.statusCode != 200) return result;
+
+    result = io.handler.stringErrorChecking(locationData.cityName);
+    if(result.statusCode != 200) return result;
+
+    result = io.handler.stringErrorChecking(locationData.planetName);
+    if(result.statusCode != 200) return result;
 
     if(typeof locationData.totalAvailableCapacity != 'number'){
         return io.handler.returnError400(io.IOErrorMessages.paramaterHasWrongTypeMessage);
