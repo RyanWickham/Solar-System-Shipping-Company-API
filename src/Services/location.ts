@@ -5,10 +5,16 @@ export const addLocationService = async (io: {[key: string]: any},
     const locationGetResponse = await io.databaseMessage.get(io.database.tableNames.locations, data.id);
     
     //locationGetResponse.item is an object, if an item is found the object will be filled with location data else it will be {}
-    //Therefore if an item is returned, it should have a cityName
-    if(locationGetResponse.item.cityName){
+    if(locationGetResponse.item == null){
         return {
             message: "Location Added: ID: " + data.id + ", already exists.",
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
+        }
+    }else if(locationGetResponse.errorOccured){
+        return {
+            message: "An error occured with et request to database.",
             response: {
                 locationGetResponse: locationGetResponse,
             }
@@ -49,14 +55,19 @@ export const addLocationService = async (io: {[key: string]: any},
 
 export const deleteLocationService = async (io: {[key: string]: any}, data: {id: string}) => {
     //check if there are any spaceships at this location
-    const locationGetResponse = await io.database.get({
-        tableName: io.database.tableNames.locations,
-        item: data
-    });
+    const locationGetResponse = await io.database.get(io.database.tableNames.locations, data.id);
 
     if(locationGetResponse.item == null){
         return {
             message: "Location with ID: " + data.id + ", does not exists.",
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
+        }
+
+    }else if(locationGetResponse.errorOccured){
+        return {
+            message: "An error occured with et request to database.",
             response: {
                 locationGetResponse: locationGetResponse,
             }
@@ -74,11 +85,27 @@ export const deleteLocationService = async (io: {[key: string]: any}, data: {id:
     }
 
     //create record to delete/send to database
-    const locationDeleteResponse = await io.database.delete({
-        tableName: io.database.tableNames.locations,
-        item: data
-    });
+    const locationDeleteResponse = await io.database.delete(io.database.tableNames.locations, data.id);
     
+    if(!locationDeleteResponse.itemWasDeleted){
+        return {
+            message: "Location with ID: " + data.id + ", was not found and could not be deleted.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                locationDeleteResponse: locationDeleteResponse,
+            }
+        }
+
+    }else if(locationDeleteResponse.errorOccured){
+        return {
+            message: "An error occured when submitting an delete request to the database.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                locationDeleteResponse: locationDeleteResponse,
+            }
+        }
+    }
+
     return {
         message: "Location with ID: " + data.id + ", was sent to be deleted.",
         response: {

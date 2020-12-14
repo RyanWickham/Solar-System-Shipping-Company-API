@@ -1,5 +1,3 @@
-import IO from ".";
-
 const aws = require('aws-sdk');
 const db = new aws.DynamoDB.DocumentClient({
     region: 'ap-southeast-2',
