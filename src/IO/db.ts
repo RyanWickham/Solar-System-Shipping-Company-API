@@ -10,14 +10,15 @@ const tableNames = {
     spaceships: "Spaceship-Table",
 }
 
-const capacityOperations = {
-    increase: "INCREASE",
-    decrease: "DECREASE",
+const updateOperations = {
+    increase: "+=",
+    decrease: "-=",
+    equals: "=",
 }
 
 export const dynamo = {
     tableNames: tableNames,
-    capacityOperations: capacityOperations,
+    updateOperations: updateOperations,
 
     post: async (tableName: string, item: {[key: string]: any}): Promise<{
         databaseMessage: string, 

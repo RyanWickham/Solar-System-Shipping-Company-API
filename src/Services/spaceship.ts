@@ -2,10 +2,7 @@
 export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: string, name: string, model: string, locationID: string, status: string}) => {
     
     //check to make sure locatonID is valid
-    const locationGetResponse = await io.database.get({
-        tableName: io.database.tableNames.locations,
-        item: {id: data.locationID}
-    });
+    const locationGetResponse = await io.database.get(io.database.tableNames.locations, data.id);
 
     if(locationGetResponse.item == null){
         //invalid locationID
@@ -15,9 +12,18 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
                 locationGetResponse: locationGetResponse
             }
         }
+
+    }else if(locationGetResponse.errorOccured){
+        return {
+            message: "An error occured with et request to database.",
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
+        }
+    }
     
     //check if the location can handle storing another spaceship
-    }else if(locationGetResponse.item.currentAmountOfCapacityUsed >= locationGetResponse.item.totalAvailableCapacity){
+    if(locationGetResponse.item.currentAmountOfCapacityUsed >= locationGetResponse.item.totalAvailableCapacity){
         //no room for a spaceship to be added
         return {
             message: "Location: " + data.locationID + ", current capacity is fully, this spaceship can not be added.",
@@ -27,78 +33,126 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
         }
     }
 
-    //create spaceship record to add/send to database
-    const spaceshipAddingResult = await io.database.post({
-        tableName: io.database.tableNames.spaceships,
-        item: data
-    });
-
-    //if the spaceship is added -> increase the capacity
-    if(!spaceshipAddingResult.itemAlreadyAdded){
-        //Update capacity of location to +1
-        const locationIncreaseCapacityResponse = await io.database.put({
-            tableName: io.database.tableNames.locations,
-            item: {
-                id: data.locationID,
-                operation: io.database.capacityOperations.increase,
-            },
-        });
-
-        //need a return here to include the locationIncreaseCapacityResponse
+    //check if an spaceship with this id already exists
+    const spaceshipGetResponse = await io.databaseMessage.get(io.database.tableNames.locations, data.id);
+    
+    //locationGetResponse.item is an object, if an item is found the object will be filled with location data else it will be {}
+    if(spaceshipGetResponse.item == null){
         return {
-            message: "Spaceship added: ID: " + data.id + ", name: " + data.name + ", model: " + data.model
-            + ", Location ID: " + data.locationID + ", status: " + data.status,
+            message: "Location Added: ID: " + data.id + ", already exists.",
             response: {
                 locationGetResponse: locationGetResponse,
-                spaceshipAddingResponse: spaceshipAddingResult,
-                locationIncreaseCapacityResponsse: locationIncreaseCapacityResponse,
+                spaceshipGetResponse: spaceshipGetResponse,
+            }
+        }
+
+    }else if(spaceshipGetResponse.errorOccured){
+        return {
+            message: "An error occured with et request to database.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                spaceshipGetResponse: spaceshipGetResponse,
             }
         }
     }
-    
-    //item wasn't added -> no need for locationIncreaseCapacityResponse
+
+    //create spaceship record to add/send to database
+    const spaceshipAddingResponse = await io.database.post(
+        io.database.tableNames.spaceships,
+        {
+            id: data.id,
+            name: data.name,
+            model: data.model,
+            locationID: data.locationID,
+            status: data.status
+        }
+    );
+
+    //check if post request was successful
+    if(spaceshipAddingResponse.errorOccured || !spaceshipAddingResponse.itemAddedSuccessfuly){
+        return {
+            message: "An error occured with put request to database.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                spaceshipGetResponse: spaceshipGetResponse,
+                spaceshipAddingResponse: spaceshipAddingResponse
+            }
+        }
+    }
+
+    //if the spaceship is added -> increase the capacity
+    //Update capacity of location to +1
+    const locationIncreaseCapacityResponse = await io.database.update(
+        io.database.tableNames.spaceships, //table name
+        data.id, //primary key
+        "currentAmountOfCapacityUsed", //value to update
+        io.database.capacityOperations.increase, //expression: '='|'+='|'-=' | '='
+        1 //updated value 
+        //operation will be => currentAmountOfCapacityUsed -= 1
+    );
+
+    if(locationIncreaseCapacityResponse.errorOccured || !locationIncreaseCapacityResponse.valuesWereUpdated){
+        return {
+            message: "An error occured within database while updating location capacity.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                spaceshipGetResponse: spaceshipGetResponse,
+                spaceshipAddingResponse: spaceshipAddingResponse,
+                locationIncreaseCapacityResponse: locationIncreaseCapacityResponse
+            }
+        }
+    }
+
+    //need a return here to include the locationIncreaseCapacityResponse
     return {
-        message: "Spaceship was not added: ID: " + data.id + ", name: " + data.name + ", model: " + data.model
-        + ", Location ID " + data.locationID + ", status: " + data.status,
+        message: "Spaceship added: ID: " + data.id + ", name: " + data.name + ", model: " + data.model
+        + ", Location ID: " + data.locationID + ", status: " + data.status,
         response: {
             locationGetResponse: locationGetResponse,
-            spaceshipAddingResponse: spaceshipAddingResult,
+            spaceshipGetResponse: spaceshipGetResponse,
+            spaceshipAddingResponse: spaceshipAddingResponse,
+            locationIncreaseCapacityResponse: locationIncreaseCapacityResponse
         }
     }
 }
 
 export const updateSpaceshipStatusService = async (io: {[key: string]: any}, data: {id: string, newStatus: string}) => {
     //Check if the spaceships exits
-    const spaceshipGetResult = await io.database.get({
-        tableName: io.database.tableNames.spaceships,
-        item: {id: data.id}
-    });
+    const spaceshipGetResponse = await io.database.get(io.database.tableNames.spaceships, data.id);
 
-    if(spaceshipGetResult.item == null){
-        //does not exists
+    //check if item exists
+    if(spaceshipGetResponse.item == null){
         return {
-            message: "Spaceship with ID: " + data.id + ", was not found -> could not update statis.",
+            message: "Spaceship with ID: " + data.id + ", was not found -> could not be deleted.",
             response: {
-                spaceshipGetResult: spaceshipGetResult,
+                spaceshipGetResponse: spaceshipGetResponse,
+            },
+        }
+
+    }else if(spaceshipGetResponse.errorOccured){
+        return {
+            message: "An error occured with et request to database.",
+            response: {
+                spaceshipGetResponse: spaceshipGetResponse,
             }
         }
     }
 
     //error checking was already on on newStatus -> it is only a vaild status value
-    const spaceshipUpdateStatusResponse = await io.database.put({
-        tableName: io.database.tableNames.spaceships,
-        item: {
-            id: data.id,
-            type: io.spaceshipValueUpdateValues.status,
-            value: data.newStatus,
-        },
-    });
+    const spaceshipUpdateStatusResponse = await io.database.update(
+        io.database.tableNames.spaceships, //table name
+        data.id, //primary key
+        "status", //value to update
+        io.database.updateOperations.equals, //expression: '='|'+='|'-=' | '='
+        data.newStatus //updated value 
+        //operation will be => status = :newStatus
+    );
 
-    if(!spaceshipUpdateStatusResponse.transactionSuccessful){
+    if(spaceshipUpdateStatusResponse.errorOccured || !spaceshipUpdateStatusResponse.valuesWereUpdated){
         return {
-            message: "Erorr occured, spaceship with ID: " + data.id + ", could not have it's status changed to: " + data.newStatus + ".",
+            message: "An error occured within database while updating location capacity.",
             response: {
-                spaceshipGetResult: spaceshipGetResult,
+                spaceshipGetResponse: spaceshipGetResponse,
                 spaceshipUpdateStatusResponse: spaceshipUpdateStatusResponse,
             }
         }
@@ -107,7 +161,7 @@ export const updateSpaceshipStatusService = async (io: {[key: string]: any}, dat
     return {
         message: "Spaceship with ID: " + data.id + ", was sent to have it's status changed to: " + data.newStatus + ".",
         response: {
-            spaceshipGetResult: spaceshipGetResult,
+            spaceshipGetResponse: spaceshipGetResponse,
             spaceshipUpdateStatusResponse: spaceshipUpdateStatusResponse,
         }
     }
@@ -115,54 +169,77 @@ export const updateSpaceshipStatusService = async (io: {[key: string]: any}, dat
 
 export const deleteSpaceshipService = async (io: {[key: string]: any}, data: {id: string}) => {
     //get item's locationID -> used to adjuest location
-    const spaceshipGetResult = await io.database.get({
-        tableName: io.database.tableNames.spaceships,
-        item: {id: data.id}
-    });
+    const spaceshipGetResponse = await io.database.get(io.database.tableNames.spaceships, data.id);
 
     //check if item exists
-    if(spaceshipGetResult.item == null){
+    if(spaceshipGetResponse.item == null){
         return {
             message: "Spaceship with ID: " + data.id + ", was not found -> could not be deleted.",
             response: {
-                spaceshipGetResponse: spaceshipGetResult,
+                spaceshipGetResponse: spaceshipGetResponse,
             },
+        }
+
+    }else if(spaceshipGetResponse.errorOccured){
+        return {
+            message: "An error occured with et request to database.",
+            response: {
+                spaceshipGetResponse: spaceshipGetResponse,
+            }
         }
     }
 
     //create spaceship record to delete
-    const spaceshipDeleteResult = await io.database.delete({
-        tableName: io.database.tableNames.spaceships,
-        item: data
-    });
+    const spaceshipDeleteResult = await io.database.delete(io.database.tableNames.spaceships, data.id);
+
+    if(!spaceshipDeleteResult.itemWasDeleted){
+        return {
+            message: "Spaceship with ID: " + data.id + ", was not found and could not be deleted.",
+            response: {
+                spaceshipGetResponse: spaceshipGetResponse,
+                spaceshipDeleteResult: spaceshipDeleteResult,
+            }
+        }
+
+    }else if(spaceshipDeleteResult.errorOccured){
+        return {
+            message: "An error occured when submitting an delete request to the database.",
+            response: {
+                spaceshipGetResponse: spaceshipGetResponse,
+                spaceshipDeleteResult: spaceshipDeleteResult,
+            }
+        }
+    }
 
     //if item was deleted -> decreas location capacity
-    if(spaceshipDeleteResult.itemWasDeleted){
-        //Update capacity of location to -1
-        const locationIncreaseCapacityResponse = await io.database.put({
-            tableName: io.database.tableNames.locations,
-            item: {
-                id: spaceshipGetResult.item.locationID,
-                operation: io.database.capacityOperations.decrease,
-            },
-        });
+    //Update capacity of location to -1
+    const locationDecreaseCapacityResponse = await io.database.update(
+        io.database.tableNames.locations, //table name
+        spaceshipGetResponse.item.locationID, //primary key
+        "currentAmountOfCapacityUsed", //value to update
+        io.database.capacityOperations.decrease, //expression: '='|'+='|'-=' | '='
+        1 //updated value 
+        //operation will be => currentAmountOfCapacityUsed -= 1
+    );
 
+    if(locationDecreaseCapacityResponse.errorOccured || !locationDecreaseCapacityResponse.valuesWereUpdated){
         return {
-            message: "Spaceship with ID: " + data.id + ", was sent to be deleted.",
+            message: "An error occured within database while updating location capacity.",
             response: {
-                spaceshipGetResponse: spaceshipGetResult,
+                spaceshipGetResponse: spaceshipGetResponse,
                 spaceshipDeleteResponse: spaceshipDeleteResult,
-                locationIncreaseCapacityResponse: locationIncreaseCapacityResponse,
-            },
+                locationDecreaseCapacityResponse: locationDecreaseCapacityResponse,
+            }
         }
     }
 
     return {
-        message: "Spaceship with ID: " + data.id + ", was not deleted.",
+        message: "Spaceship with ID: " + data.id + ", was sent to be deleted.",
         response: {
-            spaceshipGetResponse: spaceshipGetResult,
+            spaceshipGetResponse: spaceshipGetResponse,
             spaceshipDeleteResponse: spaceshipDeleteResult,
-        }
+            locationDecreaseCapacityResponse: locationDecreaseCapacityResponse,
+        },
     }
 }
 
