@@ -1,18 +1,39 @@
 export const addLocationService = async (io: {[key: string]: any}, 
         data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
-
-    //create record to add/send to database
-    const locationPostResponse = await io.database.post({
-        tableName: io.database.tableNames.locations,
-        item: data
-    });
-
-    //check if item alread exists
-    if(locationPostResponse.itemAlreadyAdded){
+    
+    //check if record id already exists
+    const locationGetResponse = await io.databaseMessage.get(io.database.tableNames.locations, data.id);
+    
+    //locationGetResponse.item is an object, if an item is found the object will be filled with location data else it will be {}
+    //Therefore if an item is returned, it should have a cityName
+    if(locationGetResponse.item.cityName){
         return {
             message: "Location Added: ID: " + data.id + ", already exists.",
             response: {
-                locationPostResponse: locationPostResponse,
+                locationGetResponse: locationGetResponse,
+            }
+        }
+    }
+
+    //create record to add/send to database
+    const locationPostResponse = await io.database.post(
+        io.database.tableNames.locations,
+        {
+            id: data.id,
+            cityName: data.cityName,
+            planetName: data.planetName,
+            totalAvailableCapacity: data.totalAvailableCapacity,
+            currentAmountOfCapacityUsed: data.currentAmountOfCapacityUsed
+        }
+    );
+
+    //check if post request was successful
+    if(locationPostResponse.errorOccured || !locationPostResponse.itemAddedSuccessfuly){
+        return {
+            message: "An error occured with put request to database.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                locationPostResponse: locationPostResponse
             }
         }
     }
