@@ -39,7 +39,7 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
     //locationGetResponse.item is an object, if an item is found the object will be filled with location data else it will be {}
     if(spaceshipGetResponse.item != null){
         return {
-            message: "Location Added: ID: " + data.id + ", already exists.",
+            message: "Apaceship ID: " + data.id + ", already exists.",
             response: {
                 locationGetResponse: locationGetResponse,
                 spaceshipGetResponse: spaceshipGetResponse,
