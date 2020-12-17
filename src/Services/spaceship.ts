@@ -4,7 +4,7 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
     //check to make sure locatonID is valid
     const locationGetResponse = await io.database.get(io.database.tableNames.locations, data.id);
 
-    if(locationGetResponse.item == null){
+    if(locationGetResponse.item != null){
         //invalid locationID
         return {
             message: "Invalid locationID: " + data.locationID + ", is not linked to any location.",
@@ -37,7 +37,7 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
     const spaceshipGetResponse = await io.databaseMessage.get(io.database.tableNames.locations, data.id);
     
     //locationGetResponse.item is an object, if an item is found the object will be filled with location data else it will be {}
-    if(spaceshipGetResponse.item == null){
+    if(spaceshipGetResponse.item != null){
         return {
             message: "Location Added: ID: " + data.id + ", already exists.",
             response: {
@@ -83,7 +83,7 @@ export const addSpaceshipService = async (io: {[key: string]: any}, data: {id: s
     //if the spaceship is added -> increase the capacity
     //Update capacity of location to +1
     const locationIncreaseCapacityResponse = await io.database.update(
-        io.database.tableNames.spaceships, //table name
+        io.database.tableNames.locations, //table name
         data.id, //primary key
         "currentAmountOfCapacityUsed", //value to update
         io.database.capacityOperations.increase, //expression: '='|'+='|'-=' | '='

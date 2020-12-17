@@ -5,7 +5,7 @@ export const addLocationService = async (io: {[key: string]: any},
     const locationGetResponse = await io.databaseMessage.get(io.database.tableNames.locations, data.id);
     
     //locationGetResponse.item is an object, if an item is found the object will be filled with location data else it will be {}
-    if(locationGetResponse.item == null){
+    if(locationGetResponse.item != null){
         return {
             message: "Location Added: ID: " + data.id + ", already exists.",
             response: {
