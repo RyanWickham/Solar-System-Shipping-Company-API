@@ -35,11 +35,20 @@ const errorChecking = (spaceshipData: {[key: string]: any}): {statusCode: number
     }
 
     //type gard to ensure that each paramater is of correct type
-    io.handler.stringErrorChecking(spaceshipData.id);
-    io.handler.stringErrorChecking(spaceshipData.name);
-    io.handler.stringErrorChecking(spaceshipData.model);
-    io.handler.stringErrorChecking(spaceshipData.locationID);
-    io.handler.stringErrorChecking(spaceshipData.status);
+    let result:{statusCode: number, body: string} = io.handler.stringErrorChecking(spaceshipData.id);
+    if(result.statusCode != 200) return result;
+
+    result = io.handler.stringErrorChecking(spaceshipData.name);
+    if(result.statusCode != 200) return result;
+
+    result = io.handler.stringErrorChecking(spaceshipData.model);
+    if(result.statusCode != 200) return result;
+
+    result = io.handler.stringErrorChecking(spaceshipData.locationID);
+    if(result.statusCode != 200) return result;
+
+    result = io.handler.stringErrorChecking(spaceshipData.status);
+    if(result.statusCode != 200) return result;
 
     //Make sure that status is only of type [DECOMMISSIONED | MAINTENANCE | OPERATIONAL]
     if(spaceshipData.status != io.spaceshipStatusValues.decommissioned && spaceshipData.status != io.spaceshipStatusValues.maintenance

@@ -1,18 +1,45 @@
 export const addLocationService = async (io: {[key: string]: any}, 
         data: {id: string, cityName: string, planetName, totalAvailableCapacity: number, currentAmountOfCapacityUsed: number}) => {
-
-    //create record to add/send to database
-    const locationPostResponse = await io.database.post({
-        tableName: io.database.tableNames.locations,
-        item: data
-    });
-
-    //check if item alread exists
-    if(locationPostResponse.itemAlreadyAdded){
+    
+    //check if record id already exists
+    const locationGetResponse = await io.databaseMessage.get(io.database.tableNames.locations, data.id);
+    
+    //locationGetResponse.item is an object, if an item is found the object will be filled with location data else it will be {}
+    if(locationGetResponse.item != null){
         return {
             message: "Location Added: ID: " + data.id + ", already exists.",
             response: {
-                locationPostResponse: locationPostResponse,
+                locationGetResponse: locationGetResponse,
+            }
+        }
+    }else if(locationGetResponse.errorOccured){
+        return {
+            message: "An error occured with et request to database.",
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
+        }
+    }
+
+    //create record to add/send to database
+    const locationPostResponse = await io.database.post(
+        io.database.tableNames.locations,
+        {
+            id: data.id,
+            cityName: data.cityName,
+            planetName: data.planetName,
+            totalAvailableCapacity: data.totalAvailableCapacity,
+            currentAmountOfCapacityUsed: data.currentAmountOfCapacityUsed
+        }
+    );
+
+    //check if post request was successful
+    if(locationPostResponse.errorOccured || !locationPostResponse.itemAddedSuccessfuly){
+        return {
+            message: "An error occured with put request to database.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                locationPostResponse: locationPostResponse
             }
         }
     }
@@ -28,14 +55,19 @@ export const addLocationService = async (io: {[key: string]: any},
 
 export const deleteLocationService = async (io: {[key: string]: any}, data: {id: string}) => {
     //check if there are any spaceships at this location
-    const locationGetResponse = await io.database.get({
-        tableName: io.database.tableNames.locations,
-        item: data
-    });
+    const locationGetResponse = await io.database.get(io.database.tableNames.locations, data.id);
 
     if(locationGetResponse.item == null){
         return {
             message: "Location with ID: " + data.id + ", does not exists.",
+            response: {
+                locationGetResponse: locationGetResponse,
+            }
+        }
+
+    }else if(locationGetResponse.errorOccured){
+        return {
+            message: "An error occured with et request to database.",
             response: {
                 locationGetResponse: locationGetResponse,
             }
@@ -53,11 +85,27 @@ export const deleteLocationService = async (io: {[key: string]: any}, data: {id:
     }
 
     //create record to delete/send to database
-    const locationDeleteResponse = await io.database.delete({
-        tableName: io.database.tableNames.locations,
-        item: data
-    });
+    const locationDeleteResponse = await io.database.delete(io.database.tableNames.locations, data.id);
     
+    if(!locationDeleteResponse.itemWasDeleted){
+        return {
+            message: "Location with ID: " + data.id + ", was not found and could not be deleted.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                locationDeleteResponse: locationDeleteResponse,
+            }
+        }
+
+    }else if(locationDeleteResponse.errorOccured){
+        return {
+            message: "An error occured when submitting an delete request to the database.",
+            response: {
+                locationGetResponse: locationGetResponse,
+                locationDeleteResponse: locationDeleteResponse,
+            }
+        }
+    }
+
     return {
         message: "Location with ID: " + data.id + ", was sent to be deleted.",
         response: {

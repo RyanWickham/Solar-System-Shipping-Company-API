@@ -81,6 +81,7 @@ functions:
       - http:
           method: post
           path: "locations/{locationID}"
+    role: addLocationRole
 
   removeLocation:
     handler: "./src/handler/removeLocation.handler"
@@ -88,6 +89,7 @@ functions:
       - http:
           method: delete
           path: "locations/{locationID}"
+    role: removeLocationRole
 
   locationHelp:
     handler: "./src/handler/locationHelp.handler"
@@ -102,6 +104,7 @@ functions:
       - http:
           method: post
           path: "spaceships/{spaceshipID}"
+    role: addSpaceshipRole
 
   updateSpaceshipStatus:
     handler: "./src/handler/updateSpaceshipStatus.handler"
@@ -109,6 +112,7 @@ functions:
       - http:
           method: put
           path: "spaceships/status/{spaceshipID}"
+    role: updateSpaceshipStatusRole
 
   removeSpaceship:
     handler: "./src/handler/removeSpaceship.handler"
@@ -116,6 +120,7 @@ functions:
       - http:
           method: delete
           path: "spaceships/{spaceshipID}"
+    role: removeSpaceshipRole
 
   spaceshipHelp:
     handler: "./src/handler/spaceshipHelp.handler"
@@ -188,3 +193,177 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+resources:
+  Resources:
+    spaceshipTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Spaceship-Table
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    LocationTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Location-Table
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    addLocationRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: addLocationRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: addLocationPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:PutItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Location-Table"
+
+    removeLocationRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: removeLocationRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: removeLocationPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:GetItem
+                    - dynamodb:DeleteItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Location-Table"
+
+    addSpaceshipRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: addSpaceshipRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: addSpaceshipPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:PutItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Spaceship-Table"
+                - Effect: Allow
+                  Action:
+                    - dynamodb:GetItem
+                    - dynamodb:UpdateItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Location-Table"
+
+    removeSpaceshipRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: removeSpaceshipRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: removeSpaceshipPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:GetItem
+                    - dynamodb:DeleteItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Spaceship-Table"
+                - Effect: Allow
+                  Action:
+                    - dynamodb:UpdateItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Location-Table"
+
+    updateSpaceshipStatusRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: updateSpaceshipStatusRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: updateSpaceshipStatusPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:GetItem
+                    - dynamodb:UpdateItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Spaceship-Table"
+
+    spaceshipTravelToRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: spaceshipTravelToRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: spaceshipTravelToPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:GetItem
+                    - dynamodb:UpdateItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Spaceship-Table"
+                - Effect: Allow
+                  Action:
+                    - dynamodb:GetItem
+                    - dynamodb:UpdateItem
+                  Resource: "arn:aws:dynamodb:ap-southeast-2:243528592214:table/Location-Table"

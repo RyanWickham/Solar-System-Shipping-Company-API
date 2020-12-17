@@ -32,8 +32,11 @@ const errorChecking = (travelData: {[key: string]: any}): {statusCode: number, b
     }
 
     //check if spaceship ID and distination ID is correct type
-    io.handler.stringErrorChecking(travelData.spaceshipID);
-    io.handler.stringErrorChecking(travelData.distinationID);
+    let result:{statusCode: number, body: string} = io.handler.stringErrorChecking(travelData.spaceshipID);
+    if(result.statusCode != 200) return result;
+
+    result = io.handler.stringErrorChecking(travelData.distinationID);
+    if(result.statusCode != 200) return result;
 
     return io.handler.returnSuccess('');//use as a dummy response to signify no errors
 }
